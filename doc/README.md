@@ -9,7 +9,7 @@ The data exchange system has following key concepts:
 5. buyer
 6. seller
 
-the relationship is as flows:
+the relationship is as flows:  
 ![Data](DataExchange.jpg)
 
 ## file format
@@ -28,12 +28,12 @@ TBD
 ## Data exchange
 Since we must identyfy who send what and how to prove it, so we must attach sender's identiy and signature
 
-We have two kind of data to be post:</br>
+We have two kinds of data to be post:</br>
 1. Plain Data 
 2. Encrypted Data 
 
 ### Plain Data Exchange
-For plain data, if data we assume to upload is:
+For plain data, if data assumed to be upload is:
 ```
 	{
 		"type":"template",
