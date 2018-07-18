@@ -1,0 +1,23 @@
+{
+        "type":"transaction",
+	"sid":"2018072503",
+	"cid":"2018071803",
+	"did":"2018072304",
+	"keys":[
+		{
+			"DID":1,
+			"Encode":"receiverpubkey,aes,sha1",
+			"key":"576..."
+		},
+		{
+			"DID":2,
+			"Encode":"receiverpubkey,aes,sha1",
+			"key":"fe687..."
+		},
+		{
+			"DID":3,
+			"Encode":"receiverpubkey,aes,sha1",
+			"key":"af809..."
+		}
+	]
+}
