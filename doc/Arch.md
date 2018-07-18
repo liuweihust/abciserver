@@ -1,24 +1,26 @@
-# Data encapsulation with signature
+# General design
 
-##Big picture
-###The data exchange system has following key concepts:
-template
-data
-contract
-transaction
-buyer
-seller
+## Big picture
+The data exchange system has following key concepts:
+1. template
+2. data
+3. contract
+4. transaction
+5. buyer
+6. seller
 
 the relationship is as flows:
+![Data](DataExchange.jpg)
 
+## Data exchange
+Since we must identyfy who send what and how to prove it, so we must attach sender's identiy and signature
 
-##Data exchange
-###We have two kind of data to be post:</br>
-Plain Data </br>
-Encrypted Data </br>
+We have two kind of data to be post:</br>
+1. Plain Data 
+2. Encrypted Data 
 
-###Plain Data Exchange
-For plain data, if data we assume to upload is:</br>
+### Plain Data Exchange
+For plain data, if data we assume to upload is:
 ```
 	{
 		"type":"template",
@@ -35,7 +37,7 @@ For plain data, if data we assume to upload is:</br>
 	}
 ```
 
-So the data we send may be:</br>
+So the data we send may be:
 ```
 {
 	"sender":"886812acdf2...",
@@ -55,7 +57,7 @@ So the data we send may be:</br>
 	"sig":"9012387t5121..."
 }
 ```
-###Encrypt Data Exchange
+### Encrypt Data Exchange
 Suppose the data to be encrypted is:
 ```
 {
@@ -78,6 +80,9 @@ Suppose the data to be encrypted is:
         ]
 }
 ```
+
+and the data seded will be:
+```
 {
 	"sender":"886812acdf2...",
 	"data":'75969569870806'
@@ -85,5 +90,5 @@ Suppose the data to be encrypted is:
 }
 ```
 
-##Data encrypt and Decrypt
+## Data encrypt and Decrypt
 All data is encrypted with a symmetric cryptography, such as AES, however, the key of symmetric cryptography is protected with the pub key of the buyer, the seller 
