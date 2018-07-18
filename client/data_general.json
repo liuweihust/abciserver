@@ -1,0 +1,19 @@
+{
+        "type":"data",
+	"encode":"plain",
+        "tid":"FW2018071601",
+        "data":[
+                {
+			"DID":1,
+                	"value":"Zhang Dawei"
+                },  
+                {
+			"DID":2,
+                	"value":"male"
+                },  
+                {
+                	"DID":3,
+                	"value":"57"
+                }   
+        ] 
+}

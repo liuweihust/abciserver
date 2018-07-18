@@ -1,0 +1,23 @@
+{
+	"type":"template",
+	"tname":"吸烟史",
+	"tid":"FW2018071603",
+	"category":"smoke",
+	"template":[
+		{"name":"吸烟历史",
+		"DID":1,
+		"type":"int",
+		"required":true
+		},
+		{"name":"每天吸烟量",
+		"type":"int",
+		"DID":2,
+		"required":true
+		},
+		{"name":"初次吸烟时间",
+		"DID":3,
+		"type":"int",
+		"required":true
+		}
+	]
+}

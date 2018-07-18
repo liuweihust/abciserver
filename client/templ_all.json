@@ -1,0 +1,18 @@
+{
+	"type":"template",
+	"tname":"阜外心内科随访",
+	"tid":"FW2018071601",
+	"category":"general",
+	"template":[
+		{"name":"基本信息",
+		"DID":1,
+		"type":"int",
+		"required":true
+		},
+		{"name":"吸烟史",
+		"type":"int",
+		"DID":2,
+		"required":true
+		}
+	]
+}
