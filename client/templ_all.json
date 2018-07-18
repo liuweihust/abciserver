@@ -1,17 +1,25 @@
 {
 	"type":"template",
 	"tname":"阜外心内科随访",
-	"tid":"FW2018071601",
-	"category":"general",
+	"tid":"FW2018071604",
+	"category":"FollowupSurvey:HeartDisease",
 	"template":[
-		{"name":"基本信息",
+		{"name":"general",
+		"alias":"基本信息",
 		"DID":1,
-		"type":"int",
+		"tid":"FW2018071601",
 		"required":true
 		},
-		{"name":"吸烟史",
-		"type":"int",
+		{"name":"SmokeHistory",
+		"alias":"吸烟史",
 		"DID":2,
+		"tid":"FW2018071602",
+		"required":true
+		},
+		{"name":"BloodRoutineExamination",
+		"alias":"血常规",
+		"DID":3,
+		"tid":"FW2018071603",
 		"required":true
 		}
 	]

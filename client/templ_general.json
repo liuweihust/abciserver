@@ -4,17 +4,20 @@
 	"tid":"FW2018071602",
 	"category":"general",
 	"template":[
-		{"name":"姓名",
+		{"name":"Patientname",
+		"alias":"姓名",
 		"DID":1,
-		"type":"int",
+		"type":"string",
 		"required":true
 		},
-		{"name":"性别",
+		{"name":"Gender",
+		"alias":"性别",
 		"type":"int",
 		"DID":2,
 		"required":true
 		},
-		{"name":"年龄",
+		{"name":"Age",
+		"alias":"年龄",
 		"DID":3,
 		"type":"int",
 		"required":true
