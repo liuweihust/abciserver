@@ -1,0 +1,19 @@
+{
+        "type":"data",
+	"encode":"plain",
+        "tid":"FW2018071602",
+        "data":[
+                {
+			"DID":1,
+                	"value":true
+                },  
+                {
+			"DID":2,
+                	"value":50
+                },  
+                {
+                	"DID":3,
+                	"value":1.5
+                }
+        ]
+}

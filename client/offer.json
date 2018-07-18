@@ -1,0 +1,8 @@
+{
+        "type":"contract",
+	"cid":"2018071803",
+	"encode":"plain",
+        "fee":100,
+	"from":"User1123",
+	"to":"User9986"
+}
