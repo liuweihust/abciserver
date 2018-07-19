@@ -98,7 +98,7 @@ and the data seded will be:
 ```
 {
 	"sender":"886812acdf2...",
-	"data":'75969569870806'
+	"data":"75969569870806",
 	"sig":"9012387t5121..."
 }
 ```

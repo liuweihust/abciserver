@@ -79,7 +79,13 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	}
 	app.state.db.Set(prefixKey(key), value)
 	app.state.Size += 1
-
+	/*
+		tags := []cmn.KVPair{
+			{[]byte("account.name"), []byte("igor")},
+			{[]byte("account.address"), []byte("0xdeadbeef")},
+			{[]byte("tx.amount"), []byte("7")},
+		}
+	*/
 	tags := []cmn.KVPair{
 		{[]byte("app.creator"), []byte("jae")},
 		{[]byte("app.key"), key},
