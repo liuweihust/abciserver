@@ -12,6 +12,17 @@ import (
 	dbm "github.com/tendermint/tendermint/libs/db"
 )
 
+type TxMessage struct {
+	Sender string          `json:"sender"`
+	Sig    string          `json:"sig"`
+	Data   json.RawMessage `json:"data"`
+}
+
+type TmplMessage struct {
+	//Tid map[string]string `json:"tid"`
+	Type map[string]string `json:"type"`
+}
+
 var (
 	stateKey        = []byte("stateKey")
 	kvPairPrefixKey = []byte("kvPairKey:")
@@ -68,7 +79,6 @@ func (app *KVStoreApplication) Info(req types.RequestInfo) (resInfo types.Respon
 	return types.ResponseInfo{Data: fmt.Sprintf("{\"size\":%v}", app.state.Size)}
 }
 
-// tx is either "key=value" or just arbitrary bytes
 func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	var key, value []byte
 	parts := bytes.Split(tx, []byte("="))
@@ -79,6 +89,21 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	}
 	app.state.db.Set(prefixKey(key), value)
 	app.state.Size += 1
+	logger.Info("DeliverTx", "tx", tx)
+
+	var txdata TxMessage
+	if err := json.Unmarshal(tx, &txdata); err != nil {
+		logger.Info("unable to parse txdata:%v", err)
+	}
+
+	logger.Info("DeliverTx", "data", txdata.Data)
+	var data map[string]interface{}
+	if err := json.Unmarshal(txdata.Data, &data); err != nil {
+		logger.Info("err:%v\n,msg=%v\n", err, txdata.Data)
+	}
+
+	//fmt.Printf("Type:%s,TID:%s\n", data["type"], data["tid"])
+
 	/*
 		tags := []cmn.KVPair{
 			{[]byte("account.name"), []byte("igor")},
@@ -94,6 +119,20 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 }
 
 func (app *KVStoreApplication) CheckTx(tx []byte) types.ResponseCheckTx {
+	/*
+		//FIXME: should check signature here
+		logger.Info("CheckTx", "tx", tx)
+		var txdata map[string]interface{}
+		if err := json.Unmarshal(tx, &txdata); err != nil {
+			logger.Info("Unable to decode json data")
+			return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}
+		}
+
+		fmt.Printf("CheckTx:sender:%s\n", txdata["sender"])
+		fmt.Printf("sig:%s\n", txdata["sig"])
+		fmt.Printf("data:%s\n", txdata["data"])
+	*/
+
 	return types.ResponseCheckTx{Code: code.CodeTypeOK}
 }
 

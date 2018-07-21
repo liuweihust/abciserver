@@ -9,8 +9,10 @@ import (
 	"os"
 )
 
+var logger log.Logger
+
 func main() {
-	logger := log.NewTMLogger(log.NewSyncWriter(os.Stdout))
+	logger = log.NewTMLogger(log.NewSyncWriter(os.Stdout))
 
 	var app types.Application
 	app = NewKVStoreApplication()
