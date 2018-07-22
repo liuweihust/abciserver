@@ -1,23 +1,20 @@
 {
 	"type":"template",
-	"tname":"阜外心内科随访",
 	"tid":"FW2018071604",
+	"tname":"FuWai Hospital Heart Depart FollowupSurvey",
 	"category":"FollowupSurvey:HeartDisease",
 	"template":[
 		{"name":"general",
-		"alias":"基本信息",
 		"DID":1,
 		"tid":"FW2018071601",
 		"required":true
 		},
 		{"name":"SmokeHistory",
-		"alias":"吸烟史",
 		"DID":2,
 		"tid":"FW2018071602",
 		"required":true
 		},
 		{"name":"BloodRoutineExamination",
-		"alias":"血常规",
 		"DID":3,
 		"tid":"FW2018071603",
 		"required":true

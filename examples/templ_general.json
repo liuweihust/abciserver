@@ -1,23 +1,19 @@
 {
 	"type":"template",
-	"tname":"基本信息",
 	"tid":"FW2018071602",
 	"category":"general",
 	"template":[
 		{"name":"Patientname",
-		"alias":"姓名",
 		"DID":1,
 		"type":"string",
 		"required":true
 		},
 		{"name":"Gender",
-		"alias":"性别",
 		"type":"int",
 		"DID":2,
 		"required":true
 		},
 		{"name":"Age",
-		"alias":"年龄",
 		"DID":3,
 		"type":"int",
 		"required":true

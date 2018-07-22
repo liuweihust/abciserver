@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
+	//"reflect"
 
 	"github.com/tendermint/tendermint/abci/example/code"
 	"github.com/tendermint/tendermint/abci/types"
@@ -34,6 +35,8 @@ type State struct {
 	Height  int64  `json:"height"`
 	AppHash []byte `json:"app_hash"`
 }
+
+var MapKeys = []string{"type", "tid", "did", "cid", "sid", "category"}
 
 func loadState(db dbm.DB) State {
 	stateBytes := db.Get(stateKey)
@@ -89,32 +92,31 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	}
 	app.state.db.Set(prefixKey(key), value)
 	app.state.Size += 1
-	logger.Info("DeliverTx", "tx", tx)
+	//logger.Info("DeliverTx", "tx", tx)
 
 	var txdata TxMessage
 	if err := json.Unmarshal(tx, &txdata); err != nil {
 		logger.Info("unable to parse txdata:%v", err)
 	}
 
-	logger.Info("DeliverTx", "data", txdata.Data)
+	//logger.Info("DeliverTx", "data", txdata.Data)
 	var data map[string]interface{}
 	if err := json.Unmarshal(txdata.Data, &data); err != nil {
 		logger.Info("err:%v\n,msg=%v\n", err, txdata.Data)
 	}
 
-	//fmt.Printf("Type:%s,TID:%s\n", data["type"], data["tid"])
-
-	/*
-		tags := []cmn.KVPair{
-			{[]byte("account.name"), []byte("igor")},
-			{[]byte("account.address"), []byte("0xdeadbeef")},
-			{[]byte("tx.amount"), []byte("7")},
+	var tags cmn.KVPairs
+	for _, v := range MapKeys {
+		tif, present := data[v]
+		if present {
+			tvalue, ok := tif.(string)
+			if ok {
+				tags = append(tags, cmn.KVPair{[]byte(v), []byte(tvalue)})
+			}
 		}
-	*/
-	tags := []cmn.KVPair{
-		{[]byte("app.creator"), []byte("jae")},
-		{[]byte("app.key"), key},
 	}
+	fmt.Printf("data:%s\n", tags)
+
 	return types.ResponseDeliverTx{Code: code.CodeTypeOK, Tags: tags}
 }
 

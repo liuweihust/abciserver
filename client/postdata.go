@@ -18,9 +18,9 @@ type TemplMessage struct {
 }
 
 type SignMessage struct {
-	Sender string       `json:"sender"`
-	Sig    string       `json:"sig"`
-	Data   TemplMessage `json:"data"`
+	Sender string      `json:"sender"`
+	Sig    string      `json:"sig"`
+	Data   interface{} `json:"data"`
 }
 
 type TxMessage struct {
@@ -34,13 +34,14 @@ type PostMessage struct {
 	Params TxMessage `json:"params"`
 }
 
+/*
 var (
-	data  TemplMessage
-	sdata *string
-	pdata *PostMessage
+	data TemplMessage
+	//sdata *string
+	//pdata *PostMessage
 )
-
-func Load(filename string) (msg TemplMessage, err error) {
+*/
+func Load(filename string) (msg interface{}, err error) {
 	err = nil
 	data, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -56,7 +57,7 @@ func Load(filename string) (msg TemplMessage, err error) {
 	return
 }
 
-func signdata(data TemplMessage) (*string, error) {
+func signdata(data interface{}) (*string, error) {
 	msg, err := json.Marshal(data)
 	if err != nil {
 		fmt.Printf("Marshal error:%v\n", err)
@@ -69,8 +70,9 @@ func signdata(data TemplMessage) (*string, error) {
 		Data:   data,
 	}
 	urldata, err := json.Marshal(*sigdata)
+	fmt.Printf("marshal data:%s\n", urldata)
 	if err != nil {
-		fmt.Printf("marshal Err:%v", sigdata)
+		fmt.Printf("marshal Err:%v\n", sigdata)
 		return nil, err
 	}
 	newdata := base64.URLEncoding.EncodeToString(urldata)
@@ -95,17 +97,18 @@ func builddata(sigmsg *string) (postdata *PostMessage, err error) {
 func postdata(data *PostMessage, server string, port int) error {
 	body := new(bytes.Buffer)
 	json.NewEncoder(body).Encode(*data)
+	fmt.Printf("postdata:%s\n", body)
 
 	newurl := "http://" + server + ":" + strconv.Itoa(port)
 
 	rsp, err := http.Post(newurl, "content-type:text/plain;", body)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer rsp.Body.Close()
 	body_byte, err := ioutil.ReadAll(rsp.Body)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	fmt.Println(string(body_byte))
 
@@ -123,22 +126,30 @@ func main() {
 
 	lib.Generate(*key)
 
-	data, err = Load(*file)
+	data, err := Load(*file)
 	if err != nil {
 		fmt.Printf("Load file error:%v\n", err)
-		panic(1)
+		return
 	}
+	fmt.Printf("data=%v\n", data)
 
-	sdata, err = signdata(data)
+	sdata, err := signdata(data)
 	if err != nil {
 		fmt.Printf("Marshal error:%v\n", err)
-		panic(3)
+		return
 	}
-	pdata, err = builddata(sdata)
+	fmt.Printf("signdata=%v\n", *sdata)
+	pdata, err := builddata(sdata)
 	if err != nil {
 		fmt.Printf("Marshal error:%v\n", err)
-		panic(3)
+		return
+	}
+	fmt.Printf("pdata=%+v\n", pdata)
+
+	err = postdata(pdata, *server, *port)
+	if err != nil {
+		fmt.Printf("Marshal error:%v\n", err)
+		return
 	}
 
-	postdata(pdata, *server, *port)
 }

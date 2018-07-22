@@ -1,24 +1,20 @@
 {
 	"type":"template",
-	"tname":"吸烟史",
 	"tid":"FW2018071602",
 	"category":"smoke",
 	"template":[
 		{"name":"Smoke",
-		"Alias":"是否吸烟",
 		"DID":1,
 		"type":"bool",
 		"required":true
 		},
 		{"name":"Smokehistory",
 		"DID":2,
-		"Alias":"吸烟月数",
 		"type":"float32",
 		"unit":"month",
 		"required":false
 		},
 		{"name":"SmokeAmountPerDay",
-		"Alias":"每日吸烟量",
 		"DID":3,
 		"type":"float32",
 		"unit":"package",
