@@ -93,13 +93,12 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	app.state.db.Set(prefixKey(key), value)
 	app.state.Size += 1
 	//logger.Info("DeliverTx", "tx", tx)
-
 	var txdata TxMessage
 	if err := json.Unmarshal(tx, &txdata); err != nil {
-		logger.Info("unable to parse txdata:%v", err)
+		logger.Info("unable to parse txdata:%s", err)
 	}
 
-	//logger.Info("DeliverTx", "data", txdata.Data)
+	fmt.Printf("DeliverTx data:%s\n", txdata.Data)
 	var data map[string]interface{}
 	if err := json.Unmarshal(txdata.Data, &data); err != nil {
 		logger.Info("err:%v\n,msg=%v\n", err, txdata.Data)
@@ -115,8 +114,15 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 			}
 		}
 	}
-	fmt.Printf("data:%s\n", tags)
+	/*
+		tags := []cmn.KVPair{
+			{[]byte("account.name"), []byte("igor")},
+			{[]byte("account.address"), []byte("0xdeadbeef")},
+			{[]byte("tx.amount"), []byte("7")},
+		}
+	*/
 
+	fmt.Printf("data:%s\n", tags)
 	return types.ResponseDeliverTx{Code: code.CodeTypeOK, Tags: tags}
 }
 
@@ -149,6 +155,7 @@ func (app *KVStoreApplication) Commit() types.ResponseCommit {
 }
 
 func (app *KVStoreApplication) Query(reqQuery types.RequestQuery) (resQuery types.ResponseQuery) {
+	fmt.Printf("query:%+v\n", reqQuery)
 	if reqQuery.Prove {
 		value := app.state.db.Get(prefixKey(reqQuery.Data))
 		resQuery.Index = -1 // TODO make Proof return index
