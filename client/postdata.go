@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	//"reflect"
 	"strconv"
 )
 
@@ -65,12 +66,12 @@ func signdata(data interface{}) (*string, error) {
 	}
 
 	sigdata := &SignMessage{
-		Sig:    lib.Sign(string(msg)),
+		Sig:    lib.Sign(msg),
 		Sender: string(lib.Kid()),
 		Data:   data,
 	}
 	urldata, err := json.Marshal(*sigdata)
-	fmt.Printf("marshal data:%s\n", urldata)
+	//fmt.Printf("marshal data:%s\n", urldata)
 	if err != nil {
 		fmt.Printf("marshal Err:%v\n", sigdata)
 		return nil, err
@@ -78,6 +79,28 @@ func signdata(data interface{}) (*string, error) {
 	newdata := base64.URLEncoding.EncodeToString(urldata)
 
 	return &newdata, nil
+}
+
+func unpackTx(msg *string) {
+	newdata, ok := base64.URLEncoding.DecodeString(*msg)
+	if ok != nil {
+		fmt.Printf("Unable to decode b64 data:%s\n", newdata)
+		return
+	}
+
+	var txdata map[string]interface{}
+	if err := json.Unmarshal([]byte(newdata), &txdata); err != nil {
+		fmt.Printf("Unable to decode json data:%s\n", *msg)
+		return
+	}
+
+	fmt.Printf("data:%+v\n", txdata["data"])
+	fmt.Printf("sig:%T\n", txdata["sig"])
+	if lib.CheckSig(txdata["sender"], txdata["data"], txdata["sig"]) {
+		fmt.Printf("CheckSig ok:data:%s\n", txdata["data"])
+	}
+	return
+
 }
 
 func builddata(sigmsg *string) (postdata *PostMessage, err error) {
@@ -131,14 +154,17 @@ func main() {
 		fmt.Printf("Load file error:%v\n", err)
 		return
 	}
-	fmt.Printf("data=%v\n", data)
+	//fmt.Printf("data=%v\n", data)
 
 	sdata, err := signdata(data)
 	if err != nil {
 		fmt.Printf("Marshal error:%v\n", err)
 		return
 	}
-	fmt.Printf("signdata=%v\n", *sdata)
+	//fmt.Printf("signdata=%v\n", *sdata)
+
+	//unpackTx(sdata)
+
 	pdata, err := builddata(sdata)
 	if err != nil {
 		fmt.Printf("Marshal error:%v\n", err)

@@ -1,7 +1,7 @@
 package lib
 
 import (
-	//"encoding/base64"
+	"encoding/base64"
 	"fmt"
 	crypto "github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/p2p"
@@ -14,6 +14,7 @@ type SigType crypto.Signature
 var prvkey *p2p.NodeKey
 var err error
 
+/*
 type Convert interface {
 	AsByte() []byte
 }
@@ -21,7 +22,7 @@ type Convert interface {
 func (PubkeyType) AsByte() []byte {
 
 }
-
+*/
 func Generate(filePath string) error {
 	prvkey, err = p2p.LoadOrGenNodeKey(filePath)
 	if err != nil {
@@ -38,7 +39,7 @@ func Getpubkey() PubkeyType {
 	return prvkey.PubKey()
 }
 
-func Sign(msg []byte) SigType {
+func Sign(msg []byte) string {
 	/* base64 encoding, maybe use in future
 	fmt.Println(encodeString)
 	*/
@@ -50,10 +51,8 @@ func Sign(msg []byte) SigType {
 	if err != nil {
 		panic(err)
 	}
-	/*encodeString := base64.StdEncoding.EncodeToString(signature.Bytes())
+	encodeString := base64.StdEncoding.EncodeToString(signature.Bytes())
 	return encodeString
-	*/
-	return signature
 }
 
 func Bytes(data interface{}) ([]byte, error) {

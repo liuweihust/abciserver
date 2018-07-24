@@ -93,9 +93,10 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	app.state.db.Set(prefixKey(key), value)
 	app.state.Size += 1
 	//logger.Info("DeliverTx", "tx", tx)
+	fmt.Printf("deliverdata:%s\n", tx)
 	var txdata TxMessage
 	if err := json.Unmarshal(tx, &txdata); err != nil {
-		logger.Info("unable to parse txdata:%s", err)
+		logger.Info("unable to parse txdata:%v", err)
 	}
 
 	fmt.Printf("DeliverTx data:%s\n", txdata.Data)
@@ -105,6 +106,7 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	}
 
 	var tags cmn.KVPairs
+
 	for _, v := range MapKeys {
 		tif, present := data[v]
 		if present {
@@ -114,33 +116,34 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 			}
 		}
 	}
-	/*
-		tags := []cmn.KVPair{
-			{[]byte("account.name"), []byte("igor")},
-			{[]byte("account.address"), []byte("0xdeadbeef")},
-			{[]byte("tx.amount"), []byte("7")},
-		}
-	*/
 
 	fmt.Printf("data:%s\n", tags)
+
 	return types.ResponseDeliverTx{Code: code.CodeTypeOK, Tags: tags}
 }
 
 func (app *KVStoreApplication) CheckTx(tx []byte) types.ResponseCheckTx {
+	//FIXME: should check signature here
+	//var txdata map[string]interface{}
 	/*
-		//FIXME: should check signature here
-		logger.Info("CheckTx", "tx", tx)
-		var txdata map[string]interface{}
+		var txdata TxMessage
+		fmt.Printf("checkdata:%s\n", tx)
 		if err := json.Unmarshal(tx, &txdata); err != nil {
 			logger.Info("Unable to decode json data")
 			return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}
 		}
-
-		fmt.Printf("CheckTx:sender:%s\n", txdata["sender"])
-		fmt.Printf("sig:%s\n", txdata["sig"])
-		fmt.Printf("data:%s\n", txdata["data"])
+		fmt.Printf("%+v", txdata)
 	*/
-
+	/*
+		fmt.Printf("CheckTx:sender:%T,%+v\n", txdata["sender"], txdata["sender"])
+		fmt.Printf("sig:%+v\n", txdata["sig"])
+		if lib.CheckSig(txdata["sender"], txdata["data"], txdata["sig"]) {
+			fmt.Printf("CheckSig ok:data:%s\n", txdata["data"])
+			return types.ResponseCheckTx{Code: code.CodeTypeOK}
+		} else {
+			return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}
+		}
+	*/
 	return types.ResponseCheckTx{Code: code.CodeTypeOK}
 }
 

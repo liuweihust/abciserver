@@ -16,7 +16,8 @@ curl http://localhost:26657/validators?height=2
 
 curl http://localhost:26657/unconfirmed_txs?limit=100
 
-curl "http://localhost:26657/tx_search?query="type='template'"&prove=true"
+curl "http://localhost:26657/tx_search?query=\"type='template'\"&prove=true"
+curl "http://localhost:26657/tx_search?query=\"tx.hash='093D339C4C49B04197B402B21BBBF23805E01F49'\"&prove=true"
 
 curl --data-binary '{"jsonrpc":"2.0","id":"anything","method":"broadcast_tx_commit","params": {"tx": "AQIDBA=="}}' -H 'content-type:text/plain;' http://localhost:26657
 

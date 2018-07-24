@@ -58,16 +58,35 @@ func main() {
 
 	bsdb := dbm.NewDB("blockstore", "goleveldb", *path)
 	defer bsdb.Close()
-	fmt.Printf("bsdb:%+v\n", bsdb)
+	//fmt.Printf("bsdb:%+v\n", bsdb)
 	bs := bs.NewBlockStore(bsdb)
-	fmt.Printf("blockstore:%+v\n", bs)
+	//fmt.Printf("blockstore:%+v\n", bs)
 
 	height := bs.Height()
-	fmt.Printf("height:%d\n", height)
+	//fmt.Printf("height:%d\n", height)
 	var i int64
 	for i = 0; i < height; i++ {
 		block := bs.LoadBlock(i)
-		fmt.Printf("[%d]:%+v\n", i, block)
-	}
+		//fmt.Printf("[%d]:%+v\n", i, block)
+		if block == nil {
+			fmt.Printf("Height:%d:nil block\n", i)
+			continue
+		}
+		header := block.Header
+		if header == nil {
+			fmt.Printf("Height:%d:nil header\n", i)
+			continue
+		}
+		fmt.Printf("Height:%d tx num:%d\n", i, header.NumTxs)
+		data := block.Data
+		//fmt.Printf("data type:%T", data)
+		if header.NumTxs <= 0 {
+			continue
+		}
 
+		//fmt.Printf("[data===%+v\n", *data)
+		for j, d := range data.Txs {
+			fmt.Printf("	TX%d:%+s\n", j, string(d))
+		}
+	}
 }
