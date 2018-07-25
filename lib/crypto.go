@@ -4,17 +4,21 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	//secp256k1 "github.com/btcsuite/btcd/btcec"
 	crypto "github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/p2p"
 )
 
 type PubkeyType crypto.PubKey
+
+//type PrvkeyType crypto.PubKey
 type SigType crypto.Signature
 
 const SecretLen = 32
 
 var prvkey *p2p.NodeKey
 var err error
+var receiver crypto.PubKey
 
 func Generate(filePath string) error {
 	prvkey, err = p2p.LoadOrGenNodeKey(filePath)
@@ -84,4 +88,26 @@ func DeCipher(ciphertext []byte, secret []byte) ([]byte, error) {
 		return nil, err
 	}
 	return plaintext, nil
+}
+
+func ImportReceiver(pubstr string) error {
+	decode, err := hex.DecodeString(pubstr)
+	if err != nil {
+		return err
+	}
+	receiver, err = crypto.PubKeyFromBytes(decode)
+
+	return err
+}
+
+func SendReceiver(plaintext []byte) ([]byte, error) {
+	return PubEncrypt(plaintext, receiver)
+}
+
+func PubEncrypt(plaintext []byte, pubkey PubkeyType) ([]byte, error) {
+	return nil, nil
+}
+
+func PrvDecrypt(ciphertext []byte, prvkey p2p.NodeKey) ([]byte, error) {
+	return nil, nil
 }

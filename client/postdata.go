@@ -164,6 +164,21 @@ func main() {
 			fmt.Println("Using pubkey enciper must provide pubkey")
 			return
 		}
+		lib.ImportReceiver(*pubkey)
+
+		msg, err := json.Marshal(dataf["data"])
+		if err != nil {
+			fmt.Printf("Marshal error:%v\n", err)
+			panic(2)
+		}
+
+		cipher, err := lib.SendReceiver(msg)
+		if err != nil {
+			fmt.Printf("Marshal error:%v\n", err)
+			panic(2)
+		}
+		dataf["encode"] = "pubkey"
+		dataf["data"] = hex.EncodeToString(cipher)
 	case "plain":
 	default: //switch *cipher
 		fmt.Println("Cipher mode Error")
