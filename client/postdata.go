@@ -115,7 +115,7 @@ func main() {
 	key := flag.String("key", "prvkey.json", "private key file to read")
 	server := flag.String("server", "127.0.0.1", "server address")
 	port := flag.Int("port", 26657, "server port")
-	cipher := flag.String("cipher", "symm", "whether to encipher data,options:plain,symm,pubkey")
+	cipher := flag.String("cipher", "plain", "whether to encipher data,options:plain,symm,pubkey")
 	pubkey := flag.String("pubkey", "", "receiver's pubkey")
 
 	flag.Parse()
@@ -124,20 +124,29 @@ func main() {
 	lib.Generate(*key)
 
 	data, err := Load(*file)
-	if err != nil {
+	dataf, ok := data.(map[string]interface{})
+	if !ok {
 		fmt.Printf("Load file error:%v\n", err)
 		return
 	}
-	fmt.Printf("data=%s\n", data)
-	if *cipher == "symm" {
-		switch t := data.(type) {
-		case map[string]string:
-			secret, cipher := lib.NewCipher([]byte(t["data"]))
-			strsecret := hex.EncodeToString(secret)
-			t["encode"] = "plain"
-			t["data"] = hex.EncodeToString(cipher)
-			fmt.Printf("Secret:%s\n", strsecret)
-			/* Following lines check whether symmetric encipher,decipher works ok
+	fmt.Printf("data[data]=%v\n", dataf["data"])
+
+	switch *cipher {
+	case "symm":
+		msg, err := json.Marshal(dataf["data"])
+		if err != nil {
+			fmt.Printf("Marshal error:%v\n", err)
+			panic(2)
+		}
+
+		secret, cipher := lib.NewCipher(msg)
+		strsecret := hex.EncodeToString(secret)
+		dataf["encode"] = "plain"
+		dataf["data"] = hex.EncodeToString(cipher)
+		fmt.Printf("Secret:%s\n", strsecret)
+
+		/*
+			//Following lines check whether symmetric encipher,decipher works ok
 			bytesec, err := hex.DecodeString(strsecret)
 			if err != nil {
 				fmt.Printf("hex decode error:%v\n", err)
@@ -149,27 +158,28 @@ func main() {
 				return
 			}
 			fmt.Printf("bytes equal:%v\n", bytes.Compare(msg, newplain))
-			*/
-			fmt.Printf("send data has no data field:%s\n", data)
-		}
-	}
-	if *cipher == "pubkey" {
+		*/
+	case "pubkey":
 		if (*pubkey) == "" {
 			fmt.Println("Using pubkey enciper must provide pubkey")
 			return
 		}
+	case "plain":
+	default: //switch *cipher
+		fmt.Println("Cipher mode Error")
+		return
 	}
 
-	sdata, err := signdata(data)
+	sdata, err := signdata(dataf)
 	if err != nil {
-		fmt.Printf("Marshal error:%v\n", err)
+		fmt.Printf("Sign data error:%v\n", err)
 		return
 	}
 	//fmt.Printf("signdata=%v\n", *sdata)
 
 	pdata, err := builddata(sdata)
 	if err != nil {
-		fmt.Printf("Marshal error:%v\n", err)
+		fmt.Printf("Build data error:%v\n", err)
 		return
 	}
 	//fmt.Printf("pdata=%+v\n", pdata)
