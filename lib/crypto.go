@@ -2,10 +2,10 @@ package lib
 
 import (
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	crypto "github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/p2p"
-	//"reflect"
 )
 
 type PubkeyType crypto.PubKey
@@ -31,13 +31,6 @@ func Getpubkey() []byte {
 }
 
 func Sign(msg []byte) string {
-	/* base64 encoding, maybe use in future
-	fmt.Println(encodeString)
-	*/
-	/*
-		decodeBytes, err := base64.StdEncoding.DecodeString(msg)
-		signature, err := prvkey.PrivKey.Sign(decodeBytes)
-	*/
 	signature, err := prvkey.PrivKey.Sign(msg)
 	if err != nil {
 		panic(err)
@@ -51,25 +44,27 @@ func CheckSig(pubkey string, msg string, sig string) bool {
 	var err error
 
 	decodeBytes, err := base64.StdEncoding.DecodeString(sig)
-	if err != nil{
+	if err != nil {
 		fmt.Printf("Fail to base64 decode sig:%s\n", sig)
 		return false
 	}
 
-	csig,err := crypto.SignatureFromBytes([]byte(decodeBytes))
-	if err != nil{
+	csig, err := crypto.SignatureFromBytes([]byte(decodeBytes))
+	if err != nil {
 		fmt.Printf("Fail to build signature:%v\n", decodeBytes)
 		return false
 	}
-	fmt.Printf("csig:%v\n", csig)
 
-	cpk,err := crypto.PubKeyFromBytes([]byte(pubkey))
-	if err != nil{
-		fmt.Printf("Fail to build pubkey:%s\n", pubkey)
+	decode, err := hex.DecodeString(pubkey)
+	if err != nil {
+		fmt.Printf("Fail to hex decode pubkey:%v\n", pubkey)
 		return false
 	}
-
-	fmt.Printf("cpub:%v,csig:%v\n", cpk,csig)
+	cpk, err := crypto.PubKeyFromBytes(decode)
+	if err != nil {
+		fmt.Printf("Fail to build pubkey:%v\n", decode)
+		return false
+	}
 
 	return cpk.VerifyBytes([]byte(msg), csig)
 }

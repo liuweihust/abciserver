@@ -4,8 +4,8 @@ import (
 	lib "../lib"
 	"bytes"
 	"encoding/base64"
-	"encoding/json"
 	"encoding/hex"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -36,13 +36,6 @@ type PostMessage struct {
 	Params TxMessage `json:"params"`
 }
 
-/*
-var (
-	data TemplMessage
-	//sdata *string
-	//pdata *PostMessage
-)
-*/
 func Load(filename string) (msg interface{}, err error) {
 	err = nil
 	data, err := ioutil.ReadFile(filename)
@@ -71,11 +64,8 @@ func signdata(data interface{}) (*string, error) {
 		Sender: hex.EncodeToString(lib.Getpubkey()),
 		Data:   data,
 	}
-	fmt.Printf("pub:%+v\n",lib.Getpubkey())
-	fmt.Printf("strpub:%s\n",hex.EncodeToString(lib.Getpubkey()))
 
 	urldata, err := json.Marshal(*sigdata)
-	//fmt.Printf("marshal data:%s\n", urldata)
 	if err != nil {
 		fmt.Printf("marshal Err:%v\n", sigdata)
 		return nil, err
@@ -84,29 +74,7 @@ func signdata(data interface{}) (*string, error) {
 
 	return &newdata, nil
 }
-/*
-func unpackTx(msg *string) {
-	newdata, ok := base64.URLEncoding.DecodeString(*msg)
-	if ok != nil {
-		fmt.Printf("Unable to decode b64 data:%s\n", newdata)
-		return
-	}
 
-	var txdata map[string]interface{}
-	if err := json.Unmarshal([]byte(newdata), &txdata); err != nil {
-		fmt.Printf("Unable to decode json data:%s\n", *msg)
-		return
-	}
-
-	fmt.Printf("data:%+v\n", txdata["data"])
-	fmt.Printf("sig:%T\n", txdata["sig"])
-	if lib.CheckSig(txdata.Sender, txdata.Data, txdata.Sig) {
-		fmt.Printf("CheckSig ok:data:%s\n", txdata.Data)
-	}
-	return
-
-}
-*/
 func builddata(sigmsg *string) (postdata *PostMessage, err error) {
 	txdata := TxMessage{
 		Tx: *sigmsg,
@@ -167,19 +135,16 @@ func main() {
 	}
 	//fmt.Printf("signdata=%v\n", *sdata)
 
-	//unpackTx(sdata)
-
 	pdata, err := builddata(sdata)
 	if err != nil {
 		fmt.Printf("Marshal error:%v\n", err)
 		return
 	}
-	fmt.Printf("pdata=%+v\n", pdata)
+	//fmt.Printf("pdata=%+v\n", pdata)
 
 	err = postdata(pdata, *server, *port)
 	if err != nil {
 		fmt.Printf("Marshal error:%v\n", err)
 		return
 	}
-
 }
