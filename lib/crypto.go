@@ -5,7 +5,7 @@ import (
 	"fmt"
 	crypto "github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/p2p"
-	"reflect"
+	//"reflect"
 )
 
 type PubkeyType crypto.PubKey
@@ -14,15 +14,6 @@ type SigType crypto.Signature
 var prvkey *p2p.NodeKey
 var err error
 
-/*
-type Convert interface {
-	AsByte() []byte
-}
-
-func (PubkeyType) AsByte() []byte {
-
-}
-*/
 func Generate(filePath string) error {
 	prvkey, err = p2p.LoadOrGenNodeKey(filePath)
 	if err != nil {
@@ -35,8 +26,8 @@ func Kid() p2p.ID {
 	return prvkey.ID()
 }
 
-func Getpubkey() PubkeyType {
-	return prvkey.PubKey()
+func Getpubkey() []byte {
+	return prvkey.PubKey().Bytes()
 }
 
 func Sign(msg []byte) string {
@@ -55,62 +46,30 @@ func Sign(msg []byte) string {
 	return encodeString
 }
 
-func Bytes(data interface{}) ([]byte, error) {
-	fmt.Printf("data type:%v\n", reflect.TypeOf(data))
-	mb, ok := data.([]byte)
-	if ok {
-		fmt.Printf("byte ok,mb=%v\n", mb)
-		return mb, nil
-	}
-
-	switch t := data.(type) {
-	case interface{}:
-		fmt.Printf("interface %v\n", t)
-		fmt.Printf("interface data type:%v\n", reflect.TypeOf(t))
-	case []interface{}:
-		fmt.Printf("interface %v\n", t)
-		fmt.Printf("interface data type:%v\n", reflect.TypeOf(t))
-	case []byte:
-		//if len(t) != crypto.PubKeyEd25519Size {
-		fmt.Printf("%+v len:%d is not a pubkey size:%d\n", t, crypto.PubKeyEd25519Size, len(t))
-		return t, nil
-	case PubkeyType:
-		fmt.Printf("type []byte\n")
-		return nil, nil
-	case SigType:
-		fmt.Printf("type []byte\n")
-		return nil, nil
-	case byte:
-		fmt.Printf("type byte\n")
-		return nil, nil
-	default:
-		fmt.Printf("Switch default: %T\n", data)
-		//}
-
-	}
-	return nil, nil
-}
-
 //If sig match pubkey and msg, will return true, else return false
-func CheckSig(pubkey interface{}, msg interface{}, sig interface{}) bool {
-	var bpk /*, bdata, bsig*/ []byte
+func CheckSig(pubkey string, msg string, sig string) bool {
 	var err error
 
-	bpk, err = Bytes(pubkey)
-	if err != nil {
-		fmt.Printf("Convert pubkey error:%+v\n", pubkey)
+	decodeBytes, err := base64.StdEncoding.DecodeString(sig)
+	if err != nil{
+		fmt.Printf("Fail to base64 decode sig:%s\n", sig)
 		return false
 	}
-	fmt.Printf("bpk:%s\n", bpk)
-	/*
-		if len(pubkey) != crypto.PubKeyEd25519Size {
-				fmt.Printf("%+v len:%d is not a pubkey size:%d", pubkey, crypto.PubKeyEd25519Size, len(pubkey))
-				return false
-			}
-			if ok != nil {
-				return false
-			}
-			return inpubkey.VerifyBytes(msg, crypto.Signature(sig))
-	*/
-	return true
+
+	csig,err := crypto.SignatureFromBytes([]byte(decodeBytes))
+	if err != nil{
+		fmt.Printf("Fail to build signature:%v\n", decodeBytes)
+		return false
+	}
+	fmt.Printf("csig:%v\n", csig)
+
+	cpk,err := crypto.PubKeyFromBytes([]byte(pubkey))
+	if err != nil{
+		fmt.Printf("Fail to build pubkey:%s\n", pubkey)
+		return false
+	}
+
+	fmt.Printf("cpub:%v,csig:%v\n", cpk,csig)
+
+	return cpk.VerifyBytes([]byte(msg), csig)
 }

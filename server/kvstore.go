@@ -5,7 +5,7 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	//"reflect"
+	lib "../lib"
 
 	"github.com/tendermint/tendermint/abci/example/code"
 	"github.com/tendermint/tendermint/abci/types"
@@ -93,13 +93,11 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	app.state.db.Set(prefixKey(key), value)
 	app.state.Size += 1
 	//logger.Info("DeliverTx", "tx", tx)
-	fmt.Printf("deliverdata:%s\n", tx)
 	var txdata TxMessage
 	if err := json.Unmarshal(tx, &txdata); err != nil {
 		logger.Info("unable to parse txdata:%v", err)
 	}
 
-	fmt.Printf("DeliverTx data:%s\n", txdata.Data)
 	var data map[string]interface{}
 	if err := json.Unmarshal(txdata.Data, &data); err != nil {
 		logger.Info("err:%v\n,msg=%v\n", err, txdata.Data)
@@ -116,34 +114,30 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 			}
 		}
 	}
-
-	fmt.Printf("data:%s\n", tags)
-
 	return types.ResponseDeliverTx{Code: code.CodeTypeOK, Tags: tags}
 }
 
 func (app *KVStoreApplication) CheckTx(tx []byte) types.ResponseCheckTx {
 	//FIXME: should check signature here
 	//var txdata map[string]interface{}
-	/*
-		var txdata TxMessage
-		fmt.Printf("checkdata:%s\n", tx)
-		if err := json.Unmarshal(tx, &txdata); err != nil {
-			logger.Info("Unable to decode json data")
-			return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}
-		}
-		fmt.Printf("%+v", txdata)
-	*/
-	/*
-		fmt.Printf("CheckTx:sender:%T,%+v\n", txdata["sender"], txdata["sender"])
-		fmt.Printf("sig:%+v\n", txdata["sig"])
-		if lib.CheckSig(txdata["sender"], txdata["data"], txdata["sig"]) {
-			fmt.Printf("CheckSig ok:data:%s\n", txdata["data"])
-			return types.ResponseCheckTx{Code: code.CodeTypeOK}
-		} else {
-			return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}
-		}
-	*/
+	var txdata TxMessage
+	if err := json.Unmarshal(tx, &txdata); err != nil {
+		logger.Info("Unable to decode json data")
+		return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}
+	}
+	fmt.Printf("%+v\n", txdata)
+
+	fmt.Printf("CheckTx:sender:%T,%+v\n", txdata.Sender, txdata.Sender)
+	fmt.Printf("CheckTx:sig:%T,%+v\n", txdata.Sig, txdata.Sig)
+	fmt.Printf("CheckTx:data:%T,%+v\n", txdata.Data, txdata.Data)
+
+	if lib.CheckSig(txdata.Sender, string(txdata.Data), txdata.Sig) {
+		fmt.Printf("CheckSig ok:data:%s\n", txdata.Data)
+		return types.ResponseCheckTx{Code: code.CodeTypeOK}
+	} else {
+		return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}
+	}
+
 	return types.ResponseCheckTx{Code: code.CodeTypeOK}
 }
 

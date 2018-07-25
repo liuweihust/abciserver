@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"encoding/hex"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -67,9 +68,12 @@ func signdata(data interface{}) (*string, error) {
 
 	sigdata := &SignMessage{
 		Sig:    lib.Sign(msg),
-		Sender: string(lib.Kid()),
+		Sender: hex.EncodeToString(lib.Getpubkey()),
 		Data:   data,
 	}
+	fmt.Printf("pub:%+v\n",lib.Getpubkey())
+	fmt.Printf("strpub:%s\n",hex.EncodeToString(lib.Getpubkey()))
+
 	urldata, err := json.Marshal(*sigdata)
 	//fmt.Printf("marshal data:%s\n", urldata)
 	if err != nil {
@@ -80,7 +84,7 @@ func signdata(data interface{}) (*string, error) {
 
 	return &newdata, nil
 }
-
+/*
 func unpackTx(msg *string) {
 	newdata, ok := base64.URLEncoding.DecodeString(*msg)
 	if ok != nil {
@@ -96,13 +100,13 @@ func unpackTx(msg *string) {
 
 	fmt.Printf("data:%+v\n", txdata["data"])
 	fmt.Printf("sig:%T\n", txdata["sig"])
-	if lib.CheckSig(txdata["sender"], txdata["data"], txdata["sig"]) {
-		fmt.Printf("CheckSig ok:data:%s\n", txdata["data"])
+	if lib.CheckSig(txdata.Sender, txdata.Data, txdata.Sig) {
+		fmt.Printf("CheckSig ok:data:%s\n", txdata.Data)
 	}
 	return
 
 }
-
+*/
 func builddata(sigmsg *string) (postdata *PostMessage, err error) {
 	txdata := TxMessage{
 		Tx: *sigmsg,

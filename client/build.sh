@@ -1,4 +1,4 @@
 #!/bin/sh
 
 go build -gcflags "-N -l" iterdb.go
-#postdata.go
+go build -gcflags "-N -l" postdata.go
