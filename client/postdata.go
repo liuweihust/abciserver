@@ -111,11 +111,11 @@ func postdata(data *PostMessage, server string, port int) error {
 }
 
 func main() {
-	file := flag.String("file", "../examples/templ_all.json", "which file to post")
+	file := flag.String("file", "../examples/data_all.json", "which file to post")
 	key := flag.String("key", "prvkey.json", "private key file to read")
 	server := flag.String("server", "127.0.0.1", "server address")
 	port := flag.Int("port", 26657, "server port")
-	cipher := flag.String("cipher", "plain", "whether to encipher data,options:plain,symm,pubkey")
+	cipher := flag.String("cipher", "symm", "whether to encipher data,options:plain,symm,pubkey")
 	pubkey := flag.String("pubkey", "", "receiver's pubkey")
 
 	flag.Parse()
@@ -128,44 +128,36 @@ func main() {
 		fmt.Printf("Load file error:%v\n", err)
 		return
 	}
-	//fmt.Printf("data=%v\n", data)
-	switch *cipher {
-	case "plain":
-	case "symm":
-		msg, err := json.Marshal(data)
-		if err != nil {
-			fmt.Printf("Marshal error:%v\n", err)
-			return
+	fmt.Printf("data=%s\n", data)
+	if *cipher == "symm" {
+		switch t := data.(type) {
+		case map[string]string:
+			secret, cipher := lib.NewCipher([]byte(t["data"]))
+			strsecret := hex.EncodeToString(secret)
+			t["encode"] = "plain"
+			t["data"] = hex.EncodeToString(cipher)
+			fmt.Printf("Secret:%s\n", strsecret)
+			/* Following lines check whether symmetric encipher,decipher works ok
+			bytesec, err := hex.DecodeString(strsecret)
+			if err != nil {
+				fmt.Printf("hex decode error:%v\n", err)
+				return
+			}
+			newplain, err := lib.DeCipher(cipher, bytesec)
+			if err != nil {
+				fmt.Printf("Decipher error:%v\n", err)
+				return
+			}
+			fmt.Printf("bytes equal:%v\n", bytes.Compare(msg, newplain))
+			*/
+			fmt.Printf("send data has no data field:%s\n", data)
 		}
-
-		secret, cipher := lib.NewCipher(msg)
-		strsecret := hex.EncodeToString(secret)
-		fmt.Printf("Secret:%s\n", strsecret)
-		data = &CipherMessage{
-			Type:   "symm",
-			Cipher: hex.EncodeToString(cipher),
-		}
-		/* Following lines check whether symmetric encipher,decipher works ok
-		bytesec, err := hex.DecodeString(strsecret)
-		if err != nil {
-			fmt.Printf("hex decode error:%v\n", err)
-			return
-		}
-		newplain, err := lib.DeCipher(cipher, bytesec)
-		if err != nil {
-			fmt.Printf("Decipher error:%v\n", err)
-			return
-		}
-		fmt.Printf("bytes equal:%v\n", bytes.Compare(msg, newplain))
-		*/
-	case "pubkey":
+	}
+	if *cipher == "pubkey" {
 		if (*pubkey) == "" {
 			fmt.Println("Using pubkey enciper must provide pubkey")
 			return
 		}
-	default:
-		fmt.Println("Wrong cipher mode")
-
 	}
 
 	sdata, err := signdata(data)
