@@ -11,6 +11,8 @@ import (
 type PubkeyType crypto.PubKey
 type SigType crypto.Signature
 
+const SecretLen = 32
+
 var prvkey *p2p.NodeKey
 var err error
 
@@ -67,4 +69,19 @@ func CheckSig(pubkey string, msg string, sig string) bool {
 	}
 
 	return cpk.VerifyBytes([]byte(msg), csig)
+}
+
+func NewCipher(plaintext []byte) ([]byte, []byte) {
+	secret := crypto.CRandBytes(SecretLen)
+	ciphertext := crypto.EncryptSymmetric(plaintext, secret)
+	return secret, ciphertext
+}
+
+func DeCipher(ciphertext []byte, secret []byte) ([]byte, error) {
+	plaintext, err := crypto.DecryptSymmetric(ciphertext, secret)
+	if err != nil {
+		fmt.Printf("Marshal error:%v\n", err)
+		return nil, err
+	}
+	return plaintext, nil
 }

@@ -14,9 +14,9 @@ import (
 	"strconv"
 )
 
-type TemplMessage struct {
-	Type string `json:"type"`
-	TID  string `json:"tid"`
+type CipherMessage struct {
+	Type   string `json:"cipher"`
+	Cipher string `json:"data"`
 }
 
 type SignMessage struct {
@@ -115,6 +115,8 @@ func main() {
 	key := flag.String("key", "prvkey.json", "private key file to read")
 	server := flag.String("server", "127.0.0.1", "server address")
 	port := flag.Int("port", 26657, "server port")
+	cipher := flag.String("cipher", "plain", "whether to encipher data,options:plain,symm,pubkey")
+	pubkey := flag.String("pubkey", "", "receiver's pubkey")
 
 	flag.Parse()
 	var err error
@@ -127,6 +129,44 @@ func main() {
 		return
 	}
 	//fmt.Printf("data=%v\n", data)
+	switch *cipher {
+	case "plain":
+	case "symm":
+		msg, err := json.Marshal(data)
+		if err != nil {
+			fmt.Printf("Marshal error:%v\n", err)
+			return
+		}
+
+		secret, cipher := lib.NewCipher(msg)
+		strsecret := hex.EncodeToString(secret)
+		fmt.Printf("Secret:%s\n", strsecret)
+		data = &CipherMessage{
+			Type:   "symm",
+			Cipher: hex.EncodeToString(cipher),
+		}
+		/* Following lines check whether symmetric encipher,decipher works ok
+		bytesec, err := hex.DecodeString(strsecret)
+		if err != nil {
+			fmt.Printf("hex decode error:%v\n", err)
+			return
+		}
+		newplain, err := lib.DeCipher(cipher, bytesec)
+		if err != nil {
+			fmt.Printf("Decipher error:%v\n", err)
+			return
+		}
+		fmt.Printf("bytes equal:%v\n", bytes.Compare(msg, newplain))
+		*/
+	case "pubkey":
+		if (*pubkey) == "" {
+			fmt.Println("Using pubkey enciper must provide pubkey")
+			return
+		}
+	default:
+		fmt.Println("Wrong cipher mode")
+
+	}
 
 	sdata, err := signdata(data)
 	if err != nil {

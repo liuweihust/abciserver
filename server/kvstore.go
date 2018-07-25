@@ -89,7 +89,7 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 	app.state.Size += 1
 	var txdata TxMessage
 	if err := json.Unmarshal(tx, &txdata); err != nil {
-		logger.Error("unable to parse txdata:", "error", err, "data", txdata)
+		logger.Error("unable to parse txdata:", "error", err, "data", fmt.Sprintf("%s", txdata))
 		return types.ResponseDeliverTx{Code: code.CodeTypeEncodingError, Tags: nil}
 	}
 
@@ -110,7 +110,7 @@ func (app *KVStoreApplication) DeliverTx(tx []byte) types.ResponseDeliverTx {
 			}
 		}
 	}
-	logger.Info("DeliverTx", "tags", tags)
+	logger.Info(fmt.Sprintf("DeliverTx:%s", tags))
 	return types.ResponseDeliverTx{Code: code.CodeTypeOK, Tags: tags}
 }
 
@@ -122,7 +122,7 @@ func (app *KVStoreApplication) CheckTx(tx []byte) types.ResponseCheckTx {
 	}
 
 	if lib.CheckSig(txdata.Sender, string(txdata.Data), txdata.Sig) {
-		logger.Info("CheckSig ok:data", "data", string(txdata.Data))
+		logger.Info(fmt.Sprintf("CheckSig ok:%v", string(txdata.Data)))
 	} else {
 		logger.Info("CheckSig failed:data\n")
 		return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}
