@@ -1,6 +1,6 @@
 {
         "type":"data",
-	"encode":"plain",
+	"encode":"symm",
         "tid":"FW2018071602",
         "did":"20180716020001",
         "data":[
