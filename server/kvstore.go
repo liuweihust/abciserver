@@ -122,7 +122,7 @@ func (app *KVStoreApplication) CheckTx(tx []byte) types.ResponseCheckTx {
 	}
 
 	if lib.CheckSig(txdata.Sender, string(txdata.Data), txdata.Sig) {
-		logger.Info(fmt.Sprintf("CheckSig ok:%v", string(txdata.Data)))
+		logger.Info(fmt.Sprintf("CheckSig ok:sender:%s,data:%v", txdata.Sender, string(txdata.Data)))
 	} else {
 		logger.Info("CheckSig failed:data\n")
 		return types.ResponseCheckTx{Code: code.CodeTypeEncodingError}

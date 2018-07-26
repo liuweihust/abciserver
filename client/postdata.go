@@ -114,8 +114,9 @@ func main() {
 	key := flag.String("key", "prvkey.json", "private key file to read")
 	server := flag.String("server", "127.0.0.1", "server address")
 	port := flag.Int("port", 26657, "server port")
-	cipher := flag.String("cipher", "symm", "whether to encipher data,options:plain,symm,pubkey")
+	cipher := flag.String("cipher", "pubkey", "whether to encipher data,options:plain,symm,pubkey")
 	pubkey := flag.String("pubkey", "", "receiver's pubkey")
+	mode := flag.String("mode", "postdata", "Task:postdata,pub(show pubkey)")
 
 	flag.Parse()
 	var err error
@@ -124,6 +125,13 @@ func main() {
 	if err != nil {
 		fmt.Printf("GetKey error:%v\n", err)
 		panic(2)
+	}
+
+	switch *mode {
+	case "pub":
+		fmt.Print(hex.EncodeToString(lib.Getpubkey()))
+		return
+	default:
 	}
 
 	data, err := Load(*file)
@@ -182,6 +190,16 @@ func main() {
 		}
 		dataf["encode"] = "pubkey"
 		dataf["data"] = hex.EncodeToString(cipher)
+		/*
+			//Blow code will decode the cipher encoded by pubkey
+			decipher, err := lib.PrvDecrypt(cipher)
+			if err != nil {
+				fmt.Printf("Prv Decipher error:%v\n", err)
+				panic(2)
+			}
+			fmt.Printf("PrvDecrypt:%s\n", decipher)
+			fmt.Printf("bytes equal:%v\n", bytes.Compare(msg, decipher))
+		*/
 	case "plain":
 	default: //switch *cipher
 		fmt.Println("Cipher mode Error")
@@ -200,7 +218,7 @@ func main() {
 		fmt.Printf("Build data error:%v\n", err)
 		return
 	}
-	//fmt.Printf("pdata=%+v\n", pdata)
+	fmt.Printf("pdata=%+v\n", pdata)
 
 	err = postdata(pdata, *server, *port)
 	if err != nil {

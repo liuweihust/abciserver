@@ -1,8 +1,1 @@
-{
-        "type":"contract",
-	"cid":"2018071803",
-	"encode":"plain",
-        "fee":100,
-	"from":"User1123",
-	"to":"User9986"
-}
+{"fee": 100, "from": "02717220d2ee5c36cea4b88e75a862668d21c89812f23b08f927b4ef18be3186fd", "cid": "2018071803", "to": "02351ac615108a987b87b75fea635097e547057635572c771e4bbe565636d58b70", "encode": "plain", "type": "contract"}

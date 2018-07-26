@@ -163,9 +163,20 @@ func SendReceiver(plaintext []byte) ([]byte, error) {
 }
 
 func PubEncrypt(plaintext []byte, pubkey *btcec.PublicKey) ([]byte, error) {
-	return nil, nil
+	ciphertext, err := btcec.Encrypt(pubkey, plaintext)
+	if err != nil {
+		fmt.Println(err)
+		return nil, nil
+	}
+
+	return ciphertext, nil
 }
 
-func PrvDecrypt(ciphertext []byte, prvkey btcec.PrivateKey) ([]byte, error) {
-	return nil, nil
+func PrvDecrypt(ciphertext []byte) ([]byte, error) {
+	plaintext, err := btcec.Decrypt(prvkey, ciphertext)
+	if err != nil {
+		fmt.Printf("Decrypt error:%s\n", err)
+		return nil, err
+	}
+	return plaintext, nil
 }
