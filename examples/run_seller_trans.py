@@ -38,7 +38,7 @@ print("enckeys=",pubenc_keys)
 with open(FilePath+TransData, 'r') as f:  
     data = json.loads(f.read())  
     for i in range(len(pubenc_keys)):
-        data['keys'][i]['DID']=pubenc_keys[i]
+        data['keys'][i]['key']=pubenc_keys[i]
     f.close()
 
 
