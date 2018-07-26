@@ -92,7 +92,6 @@ func builddata(sigmsg *string) (postdata *PostMessage, err error) {
 func postdata(data *PostMessage, server string, port int) error {
 	body := new(bytes.Buffer)
 	json.NewEncoder(body).Encode(*data)
-	fmt.Printf("postdata:%s\n", body)
 
 	newurl := "http://" + server + ":" + strconv.Itoa(port)
 
@@ -111,17 +110,21 @@ func postdata(data *PostMessage, server string, port int) error {
 }
 
 func main() {
-	file := flag.String("file", "../examples/data_all.json", "which file to post")
+	file := flag.String("file", "../examples/data_general.json", "which file to post")
 	key := flag.String("key", "prvkey.json", "private key file to read")
 	server := flag.String("server", "127.0.0.1", "server address")
 	port := flag.Int("port", 26657, "server port")
-	cipher := flag.String("cipher", "plain", "whether to encipher data,options:plain,symm,pubkey")
+	cipher := flag.String("cipher", "symm", "whether to encipher data,options:plain,symm,pubkey")
 	pubkey := flag.String("pubkey", "", "receiver's pubkey")
 
 	flag.Parse()
 	var err error
 
-	lib.Generate(*key)
+	err = lib.Generate(*key)
+	if err != nil {
+		fmt.Printf("GetKey error:%v\n", err)
+		panic(2)
+	}
 
 	data, err := Load(*file)
 	dataf, ok := data.(map[string]interface{})
@@ -129,7 +132,7 @@ func main() {
 		fmt.Printf("Load file error:%v\n", err)
 		return
 	}
-	fmt.Printf("data[data]=%v\n", dataf["data"])
+	//fmt.Printf("data[data]=%v\n", dataf["data"])
 
 	switch *cipher {
 	case "symm":

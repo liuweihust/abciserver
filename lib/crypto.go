@@ -3,76 +3,131 @@ package lib
 import (
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
-	//secp256k1 "github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	crypto "github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/p2p"
+	cmn "github.com/tendermint/tendermint/libs/common"
+	"io/ioutil"
 )
 
-type PubkeyType crypto.PubKey
-
-//type PrvkeyType crypto.PubKey
-type SigType crypto.Signature
+//type PubkeyType btcec.PublicKey
+//type PrvkeyType btcec.PrivateKey
+type SigType btcec.Signature
+type PrvKey struct {
+	PrivKey []byte `json:"priv_key"` // our priv key
+}
 
 const SecretLen = 32
 
-var prvkey *p2p.NodeKey
+var pubkey, receiver *btcec.PublicKey
+var prvkey *btcec.PrivateKey
 var err error
-var receiver crypto.PubKey
+
+func LoadOrGenPrvKey(filePath string) error {
+	if cmn.FileExists(filePath) {
+		err := LoadPrvKey(filePath)
+		if err != nil {
+			fmt.Printf("Loadkey error:%s\n", filePath)
+			return err
+		}
+		return nil
+	}
+	return genPrvKey(filePath)
+}
+
+func LoadPrvKey(filePath string) error {
+	jsonBytes, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		return err
+	}
+	nodeKey := new(PrvKey)
+	err = json.Unmarshal(jsonBytes, nodeKey)
+	if err != nil {
+		fmt.Printf("Error reading PrvKey from %v: %v", filePath, err)
+		return nil
+	}
+
+	prvkey, pubkey = btcec.PrivKeyFromBytes(btcec.S256(), nodeKey.PrivKey)
+	return nil
+}
+
+func genPrvKey(filePath string) error {
+	var err error
+	prvkey, err = btcec.NewPrivateKey(btcec.S256())
+	if err != nil {
+		return err
+	}
+
+	nodeKey := &PrvKey{
+		PrivKey: prvkey.Serialize(),
+	}
+
+	jsonBytes, err := json.Marshal(nodeKey)
+	if err != nil {
+		fmt.Printf("Unmarshal key error:%v\n", err)
+		return err
+	}
+	err = ioutil.WriteFile(filePath, jsonBytes, 0600)
+	if err != nil {
+		fmt.Printf("Write key file error:%v\n", err)
+		return err
+	}
+	return nil
+}
 
 func Generate(filePath string) error {
-	prvkey, err = p2p.LoadOrGenNodeKey(filePath)
+	err = LoadOrGenPrvKey(filePath)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func Kid() p2p.ID {
-	return prvkey.ID()
-}
-
 func Getpubkey() []byte {
-	return prvkey.PubKey().Bytes()
+	return prvkey.PubKey().SerializeCompressed()
 }
 
 func Sign(msg []byte) string {
-	signature, err := prvkey.PrivKey.Sign(msg)
+	messageHash := chainhash.DoubleHashB([]byte(msg))
+	signature, err := prvkey.Sign(messageHash)
 	if err != nil {
+		fmt.Printf("sign error:%v\n", prvkey)
 		panic(err)
 	}
-	encodeString := base64.StdEncoding.EncodeToString(signature.Bytes())
+	encodeString := base64.StdEncoding.EncodeToString(signature.Serialize())
 	return encodeString
 }
 
 //If sig match pubkey and msg, will return true, else return false
-func CheckSig(pubkey string, msg string, sig string) bool {
+func CheckSig(pubkeystr string, msgstr string, sigstr string) bool {
 	var err error
 
-	decodeBytes, err := base64.StdEncoding.DecodeString(sig)
+	decodeBytes, err := base64.StdEncoding.DecodeString(sigstr)
 	if err != nil {
-		fmt.Printf("Fail to base64 decode sig:%s\n", sig)
+		fmt.Printf("Fail to base64 decode sig:%s\n", sigstr)
 		return false
 	}
-
-	csig, err := crypto.SignatureFromBytes([]byte(decodeBytes))
+	sig, err := btcec.ParseSignature(decodeBytes, btcec.S256())
 	if err != nil {
 		fmt.Printf("Fail to build signature:%v\n", decodeBytes)
 		return false
 	}
 
-	decode, err := hex.DecodeString(pubkey)
+	decode, err := hex.DecodeString(pubkeystr)
 	if err != nil {
-		fmt.Printf("Fail to hex decode pubkey:%v\n", pubkey)
+		fmt.Printf("Fail to hex decode pubkey:%v\n", pubkeystr)
 		return false
 	}
-	cpk, err := crypto.PubKeyFromBytes(decode)
+	pubkey, err = btcec.ParsePubKey(decode, btcec.S256())
 	if err != nil {
-		fmt.Printf("Fail to build pubkey:%v\n", decode)
+		fmt.Printf("Fail to parse pubkey:%v\n", pubkey)
 		return false
 	}
 
-	return cpk.VerifyBytes([]byte(msg), csig)
+	messageHash := chainhash.DoubleHashB([]byte(msgstr))
+	return sig.Verify(messageHash, pubkey)
 }
 
 func NewCipher(plaintext []byte) ([]byte, []byte) {
@@ -95,7 +150,10 @@ func ImportReceiver(pubstr string) error {
 	if err != nil {
 		return err
 	}
-	receiver, err = crypto.PubKeyFromBytes(decode)
+	receiver, err = btcec.ParsePubKey(decode, btcec.S256())
+	if err != nil {
+		return err
+	}
 
 	return err
 }
@@ -104,10 +162,10 @@ func SendReceiver(plaintext []byte) ([]byte, error) {
 	return PubEncrypt(plaintext, receiver)
 }
 
-func PubEncrypt(plaintext []byte, pubkey PubkeyType) ([]byte, error) {
+func PubEncrypt(plaintext []byte, pubkey *btcec.PublicKey) ([]byte, error) {
 	return nil, nil
 }
 
-func PrvDecrypt(ciphertext []byte, prvkey p2p.NodeKey) ([]byte, error) {
+func PrvDecrypt(ciphertext []byte, prvkey btcec.PrivateKey) ([]byte, error) {
 	return nil, nil
 }
