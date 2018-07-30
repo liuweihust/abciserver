@@ -5,15 +5,17 @@ import tempfile
 import re
 
 FilePath="./"
-DataFiles=["data_general.json","data_bloodnormal.json","data_smoke.json"]
+DataFiles=["data_general.json","data_smoke.json","data_bloodnormal.json"]
 DataAll="data_all.json"
 TransData="trans.json"
-BinFile="postdata"
+PostBinFile="postdata"
+CryptoBinFile="crypto"
 BuyerPrvFile="buyer_prvkey.json"
 SellerPrvFile="seller_prvkey.json"
 
 #Get Seller's pubkey
-cmd=BinFile + " -mode pub -key " + SellerPrvFile
+cmd=CryptoBinFile + " -mode pub -key " + BuyerPrvFile
+print("seller pubkey cmd:%s\n",cmd)
 seller=os.popen(cmd).read()
 seller_utf8 = u'%s'%seller
 
@@ -21,7 +23,8 @@ seller_utf8 = u'%s'%seller
 detepat = re.compile('^Secret:.*$')
 pubenc_keys=[]
 for item in DataFiles:
-    cmd=BinFile + " -file " + FilePath+item + " -cipher symm"
+    cmd=PostBinFile + " -file " + FilePath+item + " -cipher symm"
+    print("c=encipher cmd:%s\n"%(cmd))
     o=os.popen(cmd).read()
     res = re.search(r'^Secret:.*',o) 
     find = res.group()
@@ -29,16 +32,17 @@ for item in DataFiles:
         print("Can't find secret:%s"%o)
         break
     split = find.split(":", 1)
-    cmd=BinFile + " -mode pubenc -pubkey \"" + seller_utf8 + "\" -plain " + split[1]
-    print("cmd:%s\n"%(cmd))
+    cmd=CryptoBinFile + " -mode pubenc -pubkey " + seller_utf8 + " -plain " + split[1]
+    print("encipher symm key cmd:%s\n"%(cmd))
     o=os.popen(cmd).read()
     keyenc_utf8 = u'%s'%o
     pubenc_keys.append(keyenc_utf8)
+    print("pubenc out:%s"%o)
 
 print("enckeys=",pubenc_keys)
 
 #Send assenmble data
-cmd=BinFile + " -file " + FilePath+DataAll
+cmd=PostBinFile + " -file " + FilePath+DataAll
 o=os.popen(cmd).read()
 print("assemble data:%s"%o)
 
@@ -56,6 +60,6 @@ with open(tmpfile[1], 'w') as f:
     f.write(jsonstr)
     f.close()
 
-cmd=BinFile + " -file " + tmpfile[1] + " -cipher plain"
+cmd=PostBinFile + " -file " + tmpfile[1] + " -cipher plain"
 o=os.popen(cmd).read()
 print(o)

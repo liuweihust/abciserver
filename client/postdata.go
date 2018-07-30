@@ -135,27 +135,29 @@ func main() {
 	}
 
 	switch *mode {
-	case "pub":
-		fmt.Print(hex.EncodeToString(lib.Getpubkey()))
-		return
-	case "pubenc":
-		if *plain == "" {
+	/*
+		case "pub":
+			fmt.Print(hex.EncodeToString(lib.Getpubkey()))
+			return
+		case "pubenc":
+			if *plain == "" {
 
-			fmt.Println("Error:Must provide data to be encoded!")
+				fmt.Println("Error:Must provide data to be encoded!")
+				return
+			}
+			if *pubkey == "" {
+				fmt.Println("Error:Must provide pubkey to encod data!")
+				return
+			}
+			lib.ImportReceiver(*pubkey)
+			cipher, err := lib.SendReceiver([]byte(*plain))
+			if err != nil {
+				fmt.Printf("Error:Encode with pubkey:%v\n", err)
+				return
+			}
+			fmt.Printf("%s", hex.EncodeToString(cipher))
 			return
-		}
-		if *pubkey == "" {
-			fmt.Println("Error:Must provide pubkey to encod data!")
-			return
-		}
-		lib.ImportReceiver(*pubkey)
-		cipher, err := lib.SendReceiver([]byte(*plain))
-		if err != nil {
-			fmt.Printf("Error:Encode with pubkey:%v\n", err)
-			return
-		}
-		fmt.Printf("%s", hex.EncodeToString(cipher))
-		return
+	*/
 	case "postdata":
 	default:
 		fmt.Printf("Error:Mode:%s\n", *mode)

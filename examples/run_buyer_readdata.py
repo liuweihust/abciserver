@@ -4,10 +4,13 @@ import json
 import tempfile
 import base64
 import operator
+import optparse
+
 
 FilePath="./"
 BinFile="getdata"
 BuyerPrvFile="buyer_prvkey.json"
+CryptoBinFile="crypto"
 
 def ParseJsonRpc(o):
     data = json.loads(o)
@@ -128,12 +131,38 @@ def GetDataList(alldata):
         datalist[key] = newdict[key]
     return datalist
 
+def DecipherPubEncodedstr(key,cipher):
+    cmd=CryptoBinFile + " -mode prvdec -key " + key + " -cipher " + cipher
+    o=os.popen(cmd).read()
+    if o[0:7] != "Error:":
+        return o
+    else:
+        return None
+
+def DecipherSymmEncodedstr(symmkey,cipher):
+    cmd=CryptoBinFile + " -mode symmdec -secret " + symmkey + " -cipher " + cipher
+    o=os.popen(cmd).read()
+    if o[0:7] != "Error:":
+        return o
+    else:
+        return None
+
 if __name__ == '__main__':
+    #0. First parse arguments
+    parser = optparse.OptionParser()
+    parser.add_option('-k', '--keyfile',action="store", dest="keyfile",
+            help="buyer's prvkey file", default="./buyer_prvkey.json")
+
+
+    options, args = parser.parse_args()
+    print("keyfile:%s\n"%options.keyfile)
+
     #1. Query trans
     o=QueryTrans()
     tags,payloads = ParsePayload(o)
     if len(payloads)==0:
-        print("Parse error\n")
+        print("Error:Can't get transaction\n")
+        exit(1)
 
     #We assume the first trans is to be query
     did = payloads[0]['did'] #mean data ID
@@ -174,3 +203,28 @@ if __name__ == '__main__':
             exit(4)
     print("templates:",temps)
 
+    #6.Try to decode data, match with template, and assembly the read data,steps:
+    # a) Check the numer matchness of cipherdata,template and keys
+    # b) Decipher the symm key by buyer's prvkey
+    # c) Use the symm key to decipher the real data to plain data
+    # d) Assembly plain data with the template
+    if len(cipherdata) != len(temps) or len(cipherdata) != len(keys):
+        print("Error:num mismatch!cipherdata(%d),templates(%d),keys(%d)\n"%(len(cipherdata),len(temps),len(keys)))
+        exit(5)
+
+    symmkeys=[]
+    plains=[]
+    for i in range(len(cipherdata)):
+        symmkey = DecipherPubEncodedstr(options.keyfile,keys[i]['key'])
+        if symmkey is None:
+                print("Can not decipher symm key:%s\n"%keys[i]['key'])
+                exit(3)
+        print("symmkey:%s\n"%symmkey)
+        symmkeys.append(symmkey)
+
+        plain = DecipherSymmEncodedstr(symmkey,cipherdata[i]['data'])
+        if plain is None:
+                print("Can not decipher plain data:%s\n"%cipherdata[i]['data'])
+                exit(4)
+        print("plain data:%s\n"%plain)
+        plains.append(plain)

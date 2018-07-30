@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	crypto "github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/xsalsa20symmetric"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	"io/ioutil"
 )
@@ -132,12 +133,12 @@ func CheckSig(pubkeystr string, msgstr string, sigstr string) bool {
 
 func NewCipher(plaintext []byte) ([]byte, []byte) {
 	secret := crypto.CRandBytes(SecretLen)
-	ciphertext := crypto.EncryptSymmetric(plaintext, secret)
+	ciphertext := xsalsa20symmetric.EncryptSymmetric(plaintext, secret)
 	return secret, ciphertext
 }
 
 func DeCipher(ciphertext []byte, secret []byte) ([]byte, error) {
-	plaintext, err := crypto.DecryptSymmetric(ciphertext, secret)
+	plaintext, err := xsalsa20symmetric.DecryptSymmetric(ciphertext, secret)
 	if err != nil {
 		fmt.Printf("Marshal error:%v\n", err)
 		return nil, err

@@ -101,24 +101,6 @@ func main() {
 		err = lib.Generate(*key)
 		fmt.Print(hex.EncodeToString(lib.Getpubkey()))
 		return
-	case "pubenc":
-		if *plain == "" {
-
-			fmt.Println("Error:Must provide data to be encoded!")
-			return
-		}
-		if *pubkey == "" {
-			fmt.Println("Error:Must provide pubkey to encod data!")
-			return
-		}
-		lib.ImportReceiver(*pubkey)
-		cipher, err := lib.SendReceiver([]byte(*plain))
-		if err != nil {
-			fmt.Printf("Error:Encode with pubkey:%v\n", err)
-			return
-		}
-		fmt.Printf("%s", hex.EncodeToString(cipher))
-		return
 	case "symmenc":
 		bytesec, err := hex.DecodeString(*plain)
 		if err != nil {
@@ -147,7 +129,71 @@ func main() {
 			return
 		}
 		fmt.Printf("Plain:%s\n", newplain)
+	case "pubenc":
+		if *plain == "" {
+			fmt.Println("Error:Must provide data to be encoded!")
+			return
+		}
+		if *pubkey == "" {
+			fmt.Println("Error:Must provide pubkey to encod data!")
+			return
+		}
+		lib.ImportReceiver(*pubkey)
+		cipher, err := lib.SendReceiver([]byte(*plain))
+		if err != nil {
+			fmt.Printf("Error:Encode with pubkey:%v\n", err)
+			return
+		}
+		cipherstr := hex.EncodeToString(cipher)
+		fmt.Printf("%s", cipherstr)
+		/*
+			//test code
+			fmt.Printf("cipher:%v\n", cipher)
+			err = lib.Generate(*key)
+			if err != nil {
+				fmt.Printf("load key file error:%v\n", err)
+				return
+			}
+			bytecipher, err := hex.DecodeString(cipherstr)
+			if err != nil {
+				fmt.Printf("hex decode error:%v\n", err)
+				return
+			}
+			fmt.Printf("\nbytecipher:%v\n", bytecipher)
+			newplain, err := lib.PrvDecrypt(bytecipher)
+			if err != nil {
+				fmt.Printf("Decipher error:%v\n", err)
+				return
+			}
+			fmt.Printf("Plain:%s\n", newplain)
+		*/
+		return
 	case "prvdec":
+		if *cipher == "" {
+			fmt.Println("Error:Must provide data to be decoded!")
+			return
+		}
+		if *key == "" {
+			fmt.Println("Error:Must provide private keyfile!")
+			return
+		}
+		err = lib.Generate(*key)
+		if err != nil {
+			fmt.Printf("load key file error:%v\n", err)
+			return
+		}
+		bytecipher, err := hex.DecodeString(*cipher)
+		if err != nil {
+			fmt.Printf("hex decode error:%v\n", err)
+			return
+		}
+		//fmt.Printf("bytecipher:%v", bytecipher)
+		newplain, err := lib.PrvDecrypt(bytecipher)
+		if err != nil {
+			fmt.Printf("Decipher error:%v\n", err)
+			return
+		}
+		fmt.Printf("%s", newplain)
 	default:
 		fmt.Printf("Error:Mode:%s\n", *mode)
 		return
