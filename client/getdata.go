@@ -40,6 +40,9 @@ type PostMessage struct {
 
 func GetData(localpart string, server string, port int) ([]byte, error) {
 	newurl := "http://" + server + ":" + strconv.Itoa(port) + "/" + localpart
+	if *verbose {
+		fmt.Printf("url=%s\n", newurl)
+	}
 	rsp, err := http.Get(newurl)
 	if err != nil {
 		fmt.Printf("Error: http get:%v, url:%s\n", err, newurl)
@@ -71,15 +74,10 @@ func main() {
 		panic(2)
 	}
 
-	if *verbose {
-		//fmt.Printf("pdata=%+v\n", pdata)
-	}
 	resp, err := GetData(*lurl, *server, *port)
 	if err != nil {
 		fmt.Printf("Error:post data:%v\n", err)
 		return
 	}
-	if *verbose {
-		fmt.Println(string(resp))
-	}
+	fmt.Println(string(resp))
 }

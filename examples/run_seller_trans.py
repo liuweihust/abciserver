@@ -12,10 +12,12 @@ BinFile="postdata"
 BuyerPrvFile="buyer_prvkey.json"
 SellerPrvFile="seller_prvkey.json"
 
+#Get Seller's pubkey
 cmd=BinFile + " -mode pub -key " + SellerPrvFile
 seller=os.popen(cmd).read()
 seller_utf8 = u'%s'%seller
 
+#Send Seller's data and collect encode keys
 detepat = re.compile('^Secret:.*$')
 pubenc_keys=[]
 for item in DataFiles:
@@ -34,6 +36,11 @@ for item in DataFiles:
     pubenc_keys.append(keyenc_utf8)
 
 print("enckeys=",pubenc_keys)
+
+#Send assenmble data
+cmd=BinFile + " -file " + FilePath+DataAll
+o=os.popen(cmd).read()
+print("assemble data:%s"%o)
 
 with open(FilePath+TransData, 'r') as f:  
     data = json.loads(f.read())  
