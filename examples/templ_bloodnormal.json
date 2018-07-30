@@ -2,7 +2,7 @@
 	"type":"template",
 	"tname":"BloodRoutineExamination",
 	"tid":"FW2018071603",
-	"category":"smoke",
+	"category":"BloodRoutineExamination",
 	"template":[
 		{"name":"WBC",
 		"DID":1,

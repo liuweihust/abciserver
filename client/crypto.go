@@ -128,7 +128,7 @@ func main() {
 			fmt.Printf("Decipher error:%v\n", err)
 			return
 		}
-		fmt.Printf("Plain:%s\n", newplain)
+		fmt.Printf("%s", newplain)
 	case "pubenc":
 		if *plain == "" {
 			fmt.Println("Error:Must provide data to be encoded!")

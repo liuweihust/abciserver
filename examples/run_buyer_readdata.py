@@ -147,12 +147,50 @@ def DecipherSymmEncodedstr(symmkey,cipher):
     else:
         return None
 
+def AssemblyData(template,datastr):
+    #template = json.loads(tempstr)
+    data = json.loads(datastr)
+    final = {}
+    if template.has_key('category'):
+        final['category'] = template['category']
+    else:
+        print("Templates has no key:type\n")
+        return None
+
+    """
+    if template.has_key('tid') and data.has_key('tid'):
+        if template['tid'] != data['tid']:
+            print("tid not match:templ:%s != data:%s\n"%(template['tid'],data['tid']))
+    else:
+        print("Templates or Data has no key:tid\n")
+        return None
+    """
+
+    if not template.has_key('template'):
+        print("Templates or Data has no key:template,data\n")
+        return None
+
+    for titem in template['template']:
+        tid = titem['DID']
+        find=False
+        for ditem in data:
+            if ditem['DID'] == tid:
+                find = True
+                final[titem['name']] = ditem['value']
+                break
+
+        if not find:
+            print("Error:key (%d,%s) not found in data\n"%(titem['DID'],titem['name']))
+            return None
+
+    return final
+
+
 if __name__ == '__main__':
     #0. First parse arguments
     parser = optparse.OptionParser()
     parser.add_option('-k', '--keyfile',action="store", dest="keyfile",
             help="buyer's prvkey file", default="./buyer_prvkey.json")
-
 
     options, args = parser.parse_args()
     print("keyfile:%s\n"%options.keyfile)
@@ -171,10 +209,15 @@ if __name__ == '__main__':
     sid = payloads[0]['sid'] #means transaction ID
     print("keys",keys)
    
-    #2. Query assembly data with did
+    #2. Query assembly data with did: file:data_all.json,templ_all.json
     alldata=QueryDID(did)
     if alldata['encode'] != 'plain':
         print("Error:Wrong assembly encode mode:%s\n"%alldata['encode'])
+        exit(2)
+
+    alltemp=QueryTID(alldata['tid'])
+    if alltemp is None:
+        print("Error:Get assembly template:%s\n"%alldata['tid'])
         exit(2)
 
     #3. Get all data's DID:dids in array datalist, order by 'DID'
@@ -228,3 +271,9 @@ if __name__ == '__main__':
                 exit(4)
         print("plain data:%s\n"%plain)
         plains.append(plain)
+
+    for i in range(len(plains)):
+        finaly = AssemblyData(temps[i],plains[i])
+        jsonstr=json.dumps(finaly)
+        print("final data:%s\n"%jsonstr)
+
