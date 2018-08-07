@@ -1,0 +1,14 @@
+<div id='header'>
+	<div class='table'>
+	    <form action="/login.html" method="post">
+            <div class="table-tr">
+			{% csrf_token %}
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:70%">{{ comments }}</div>
+                <div class="table-td" style="width:20%">Welcome ! {{ username }} !</div>
+                <div class="table-td" style="width:20%"><button type="submit">Log Out</button></div>
+            </div>
+	    </form>
+	</div>
+</div>

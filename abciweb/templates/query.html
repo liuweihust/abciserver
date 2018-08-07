@@ -1,0 +1,52 @@
+<html lang="en">
+{% include "head.html" %}
+<body>
+{% include "left.html" %}
+
+<div id="section">
+    <h1>Query BlcokChain</h1>
+    <h2>Query Creteria</h2>
+    <div align="center" id="login" style="height:100">
+    <form action="/query.html" method="get">
+    {% csrf_token %}
+        <div class="table">
+            <div class=""table-tr">
+                <div class="table-td">Type</div>
+                <div class="table-td">
+                    <select name="querytype" id="type" style="width:150px">
+                        <option value="all">All</option>
+                        <option value="tid">Template</option>
+                        <option value="did">Data</option>
+                        <option value="cid">Contract</option>
+                        <option value="sid">Transaction</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-tr">
+                <div class="table-td">keyworld</div>
+                <div class="table-td">
+                    <input type="text" name="keyword" style="width:150px"/>
+                </div>
+            </div>
+            <div class="table-tr">
+                <div class="table-td" align="center">
+                    <button type="submit">提交</button>
+                </div>
+                <div class="table-td" align="center">
+                    <button type="button">重置</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p>{{ rlt }}</p>
+    </div>
+<h2>Result</h2>
+<p>
+{{ keydata }}
+</p>
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

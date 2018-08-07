@@ -1,0 +1,36 @@
+<html lang="en">
+{% include "head.html" %}
+<body>
+{% include "left.html" %}
+{% include "header.html" %}
+
+<div id="section">
+<h1>Templates</h1>
+    <h2>Upload Template</h2>
+    <div class='table'>
+	    <form enctype="multipart/form-data" action="/query.html" method="post">
+            <div class="table-tr">
+			{% csrf_token %}
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:70%">Please Choose Templates</div>
+                <div class="table-td" style="width:20%"><input type="file"></div>
+                <div class="table-td" style="width:20%"><button type="submit">Upload</button></div>
+            </div>
+	    </form>
+	</div>
+    <h2>My Template list</h2>
+    <p>
+        Standing on the River Thames, London has been a major settlement for two millennia,
+        its history going back to its founding by the Romans, who named it Londinium.
+    </p>
+    <h2>Others Template list</h2>
+    <p>
+        list
+    </p>
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

@@ -1,0 +1,67 @@
+html,body
+{
+     width:100%;
+     height:100%;
+}
+
+#nav {
+    line-height:30px;
+    background-color:#eeeeee;
+    height:600;
+    width:200;
+    float:left;
+    padding:5px; 
+}
+
+#header {
+    height:70px;
+    background-color:lightblue;
+    color:red;
+    text-align:right;
+    padding:0px;
+    margin:0px;
+    width:auto;
+}
+
+#section {
+    height:600;
+    width:800;
+    float:left;
+    padding:10px; 
+}
+
+#footer {
+    background-color:green;
+    color:white;
+    clear:both;
+    text-align:center;
+}
+
+#login{
+    margin:0 auto;
+    border:1px solid;
+    border-style:groove;(凹陷效果)
+}
+
+#userinfo{
+    margin:0 auto;
+    border:1px solid;
+    border-style:groove;(凹陷效果)
+}
+
+input{
+    border-style:groove;
+    background:lightblue;
+    color:red;
+}
+
+.table, .table * {margin: 0 auto; padding: 0;font-size: 14px;font-family: Arial, 宋体, Helvetica, sans-serif;}
+.table {display: table; width: 80%; border-collapse: collapse;}
+.table-tr {display: table-row; height: 30px;}
+.table-th {display: table-cell;font-weight: bold;height: 100%;border: 1px solid gray;text-align: center;vertical-align: middle;}
+.table-td {display: table-cell; height: 100%;border: 1px solid gray; text-align: center;vertical-align: middle;}
+
+a:link {color:blue;} /* 未访问的链接 */
+a:visited {color:blue;} /* 已访问的链接 */
+a:hover {color:red;} /* 鼠标划过链接 */
+a:active {color:black;} /* 已选中的链接 */

@@ -1,0 +1,26 @@
+<html lang="en">
+{% include "head.html" %}
+<body>
+{% include "left.html" %}
+{% include "header.html" %}
+
+<div id="section">
+<h1>User Info</h1>
+<h2>Pubkey Info</h2>
+<form action="/user.html" method="post">
+	{% csrf_token %}
+	<div class='table'>
+		<div class='table-tr'>
+			<div class='table-td' style="width:70%">
+				{{ keydata }}
+			</div>
+			<div class='table-td' style="width:30%">
+				<button type="submit" style="width:300px">Regenerate Key</button>
+			</div>
+		</div>
+	</div>
+</form>
+</div>
+{% include "footer.html" %}
+</body>
+</html>

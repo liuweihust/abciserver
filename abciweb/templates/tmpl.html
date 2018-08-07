@@ -1,0 +1,46 @@
+<html lang="en">
+{% include "head.html" %}
+<body>
+{% include "left.html" %}
+{% include "header.html" %}
+
+<div id="section">
+<h1>Templates</h1>
+    <h2>Upload Template</h2>
+    <div class='table'>
+	    <form enctype="multipart/form-data" action="/tmpl.html" method="post">
+            <div class="table-tr">
+			{% csrf_token %}
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:70%">Please Choose Templates</div>
+                <div class="table-td" style="width:20%"><input type="file" name="filename"></div>
+                <div class="table-td" style="width:20%"><button type="submit" name="upload">Upload</button></div>
+            </div>
+	    </form>
+	</div>
+    <h2>My Template list</h2>
+    <div class='table'>
+        <div class="table-tr">
+            <div class="table-th">name</div>
+            <div class="table-th">time</div>
+            <div class="table-th">content</div>
+		</div>
+        {% for x in info %}
+            <div class="table-tr">
+                <div class="table-th">{{x.0}}</div>
+                <div class="table-th">{{x.1}}</div>
+                <div class="table-th">{{x.2}}</div>
+            </div>
+        {% endfor %}
+	</div>
+    <h2>Others Template list</h2>
+    <p>
+        list
+    </p>
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

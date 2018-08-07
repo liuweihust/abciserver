@@ -1,0 +1,37 @@
+<html lang="en">
+{% include "header.html" %}
+<body>
+<script>
+	var tabs = document.getElementsByClassName('tab-head')[0].getElementsByTagName('h2'),
+        contents = document.getElementsByClassName('tab-content')[0].getElementsByTagName('div');
+
+        (function changeTab(tab) {
+               for(var i = 0, len = tabs.length; i < len; i++) {
+                    tabs[i].onmouseover = showTab;
+                }
+            })();
+
+            function showTab() {
+                for(var i = 0, len = tabs.length; i < len; i++) {
+                    if(tabs[i] === this) {
+                        tabs[i].className = 'selected';
+                        contents[i].className = 'show';
+                    } else {
+                        tabs[i].className = '';
+                        contents[i].className = '';
+                    }
+                }
+            }
+</script>
+	<div class="tab-head">
+            <h2 class="selected">1</h2>
+            <h2>2</h2>
+            <h2>3</h2>
+        </div>
+        <div class="tab-content">
+            <div class="show">content1</div>
+            <div>content2</div>
+            <div>content3</div>
+        </div>
+</body>
+</html>
