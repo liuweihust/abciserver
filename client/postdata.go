@@ -128,7 +128,7 @@ func main() {
 
 	var err error
 
-	err = lib.Generate(*key, false)
+	_, err = lib.Generate(*key, false)
 	if err != nil {
 		fmt.Printf("Error:GetKey:%v\n", err)
 		panic(2)

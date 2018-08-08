@@ -78,17 +78,17 @@ func genPrvKey(filePath string) error {
 	return nil
 }
 
-func Generate(filePath string, forcegen bool) error {
+func Generate(filePath string, forcegen bool) (string, error) {
 	if forcegen {
 		err := genPrvKey(filePath)
-		return err
+		return filePath, err
 	}
 
 	err = LoadOrGenPrvKey(filePath)
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return filePath, nil
 }
 
 func Getpubkey() []byte {

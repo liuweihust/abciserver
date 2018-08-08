@@ -34,11 +34,16 @@ def user(request):
 
     queryuser = ABCIUser.objects.get(username=user)
 
+
     context = {}
     context['username'] = user
 
     if request.POST:
-        _ = utils.GeneratePrvkey(context['username'])
+        path = utils.GeneratePrvkey(context['username'])
+        pub = utils.GetPubkey(context['username'])
+        queryuser.prvkey_file = path
+        queryuser.pubkey = pub
+        queryuser.save()
         context['comments'] = "Generate ok"
 
 

@@ -4,18 +4,13 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 import logging
 import os
+from user import utils
 #from .user import User
 from user.models import ABCIUser
- 
-def inituser():
-    u1 = ABCIUser(username='seller')
-    u1.save()
-
-    u2 = ABCIUser(username='buyer')
-    u2.save()
 
 def loginform(request):
-    #inituser()
+    #utils.adduser('seller')
+    #utils.adduser('buyer')
 
     context = {}
     return render(request, 'login.html', context)

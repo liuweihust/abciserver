@@ -20,14 +20,14 @@ import logging
 
 from django.conf.urls import url
 from abciweb import settings
-from user import view,login,templates,data,trans,query,offer
+from user import user,login,templates,data,trans,query,offer
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     url(r'^login.html$', login.loginform),
     url(r'^authpost$', login.auth),
-    url(r'^user.html$', view.user),
+    url(r'^user.html$', user.user),
     url(r'^tmpl.html$', templates.template),
     url(r'^data.html$', data.data),
     url(r'^offer.html$', offer.offer),
