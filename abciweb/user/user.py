@@ -5,6 +5,7 @@ import os
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from user import utils
+from user.models import ABCIUser
 
 CryptoBinFile="crypto"
 BuyerPrvFile="buyer_prvkey.json"
@@ -30,6 +31,8 @@ def user(request):
     user =  request.session.get('username', None)
     if user is None:
         return HttpResponseRedirect('/login.html')
+
+    queryuser = ABCIUser.objects.get(username=user)
 
     context = {}
     context['username'] = user

@@ -50,7 +50,7 @@ def template(request):
                 f.close()
 
             if valid:
-                tmpl = Template(sender=user,path=path,tid=data['tid'],
+                tmpl = DataTemplate(sender=user,path=path,tid=data['tid'],
                             tname=data['tname'],category=data['category'])
                 tmpl.save()
 

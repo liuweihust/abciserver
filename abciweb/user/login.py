@@ -7,20 +7,26 @@ import os
 #from .user import User
 from user.models import ABCIUser
  
+def inituser():
+    u1 = ABCIUser(username='seller')
+    u1.save()
+
+    u2 = ABCIUser(username='buyer')
+    u2.save()
 
 def loginform(request):
+    #inituser()
+
     context = {}
     return render(request, 'login.html', context)
 
 def auth(request):
-    #return HttpResponse("hello")
-    logging.debug("come in auth")
     context = {}
     if request.POST:
         context['username'] = request.POST['username']
         context['password'] = request.POST['password']
 
-    u = ABCIUser(username=context['username'])
+
     request.session['username'] = request.POST['username']
     logging.debug("user:%s,pwd:%s"%(context['username'],context['password']))
     #return render(request, 'user.html', context)
