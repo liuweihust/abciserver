@@ -1,6 +1,7 @@
 {
 	"type":"template",
 	"tid":"FW2018071601",
+	"tname":"Patient info",
 	"category":"general",
 	"template":[
 		{"name":"Patientname",

@@ -122,13 +122,13 @@ func main() {
 	pubkey := flag.String("pubkey", "", "receiver's pubkey")
 	mode := flag.String("mode", "postdata", "Task:postdata,pub(show pubkey),pubenc(using pubkey to encode data)")
 	verbose = flag.Bool("v", false, "Verbose:default false")
-	plain := flag.String("plain", "", "data to encode using pubkey")
+	//plain := flag.String("plain", "", "data to encode using pubkey")
 
 	flag.Parse()
 
 	var err error
 
-	err = lib.Generate(*key)
+	err = lib.Generate(*key, false)
 	if err != nil {
 		fmt.Printf("Error:GetKey:%v\n", err)
 		panic(2)

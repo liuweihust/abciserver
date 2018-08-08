@@ -1,6 +1,7 @@
 {
 	"type":"template",
 	"tid":"FW2018071602",
+	"tname":"Smoke history",
 	"category":"smoke",
 	"template":[
 		{"name":"Smoke",

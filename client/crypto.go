@@ -97,8 +97,12 @@ func main() {
 	}
 
 	switch *mode {
+	case "key":
+		err = lib.Generate(*key, true)
+		fmt.Print(hex.EncodeToString(lib.Getpubkey()))
+		return
 	case "pub":
-		err = lib.Generate(*key)
+		err = lib.Generate(*key, false)
 		fmt.Print(hex.EncodeToString(lib.Getpubkey()))
 		return
 	case "symmenc":
@@ -177,7 +181,7 @@ func main() {
 			fmt.Println("Error:Must provide private keyfile!")
 			return
 		}
-		err = lib.Generate(*key)
+		err = lib.Generate(*key, false)
 		if err != nil {
 			fmt.Printf("load key file error:%v\n", err)
 			return

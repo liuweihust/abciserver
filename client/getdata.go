@@ -58,17 +58,14 @@ func GetData(localpart string, server string, port int) ([]byte, error) {
 }
 
 func main() {
-	//key := flag.String("key", "prvkey.json", "private key file to read")
 	server := flag.String("server", "127.0.0.1", "server address")
 	port := flag.Int("port", 26657, "server port")
 	verbose = flag.Bool("v", false, "Verbose:default false")
 	lurl := flag.String("lurl", "status", "local part of url to query")
-	//mode := flag.String("mode", "plain", "unMarshal json data:plain")
 
 	flag.Parse()
 	var err error
 
-	//err = lib.Generate(*key)
 	if err != nil {
 		fmt.Printf("Error:GetKey:%v\n", err)
 		panic(2)

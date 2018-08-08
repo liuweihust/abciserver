@@ -78,7 +78,12 @@ func genPrvKey(filePath string) error {
 	return nil
 }
 
-func Generate(filePath string) error {
+func Generate(filePath string, forcegen bool) error {
+	if forcegen {
+		err := genPrvKey(filePath)
+		return err
+	}
+
 	err = LoadOrGenPrvKey(filePath)
 	if err != nil {
 		return err
