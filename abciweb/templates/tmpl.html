@@ -23,14 +23,14 @@
     <div class='table'>
         <div class="table-tr">
             <div class="table-th">name</div>
-            <div class="table-th">time</div>
+            <div class="table-th">category</div>
             <div class="table-th">content</div>
 		</div>
         {% for x in info %}
             <div class="table-tr">
-                <div class="table-th">{{x.0}}</div>
+                <div class="table-th"><a href="{{x.3}}">{{x.0}}</a></div>
                 <div class="table-th">{{x.1}}</div>
-                <div class="table-th">{{x.2}}</div>
+                <div class="table-th"> {{x.2}}</div>
             </div>
         {% endfor %}
 	</div>

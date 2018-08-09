@@ -1,0 +1,51 @@
+<html lang="en">
+{% include "head.html" %}
+<body>
+{% include "left.html" %}
+{% include "header.html" %}
+
+<div id="section">
+<h1>New Offer</h1>
+    <div class='table'>
+	    <form enctype="multipart/form-data" action="/offer.html" method="post">
+            <div class="table-tr">
+			{% csrf_token %}
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-th" style="width:25%">Seller</div>
+                <div class="table-th" style="width:25%">Templates</div>
+                <div class="table-th" style="width:25%">Fee</div>
+                <div class="table-th" style="width:25%">Action</div>
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:25%"><input type="text" name="buyer" value="{{buyer}}" style="width:100%"/></div>
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:25%">
+                    <select name="seller">
+                        {% for x in sellers %}
+                            <option value ="{{x.1}}">"{{x.0}}"</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="table-td" style="width:25%">
+                    <select name="tid">
+                        {% for x in tmpls %}
+                            <option value ="{{x.0}}">"{{x.1}}"</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="table-td" style="width:25%">
+                    <input type="text" name="fee" value="{{fee}}" style="width:150px"/>
+                </div>
+                <div class="table-td" style="width:25%"><button type="submit" name="upload">Submit</button></div>
+            </div>
+
+	    </form>
+	</div>
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

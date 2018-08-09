@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from user.models import DataTemplate
 import json
 
-BASE_DIR="/tmp/"
+BASE_DIR="./static/"
 
 def template(request):
     #return HttpResponse("hello")
@@ -58,8 +58,10 @@ def template(request):
     context['username'] = user
 
     info = []
-    info.append(['lw','1','abc'])
-    info.append(['lw1','2','cde'])
+    tmpls = DataTemplate.objects.all().filter(sender=user)
+
+    for item in tmpls:
+        info.append([item.tname,item.category,item.sender,item.path])
     context['info'] = info
 
     return render(request, "tmpl.html", context)

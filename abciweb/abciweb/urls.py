@@ -31,6 +31,8 @@ urlpatterns = [
     url(r'^tmpl.html$', templates.template),
     url(r'^data.html$', data.data),
     url(r'^offer.html$', offer.offer),
+    url(r'^newoffer.html$', offer.newoffer),
     url(r'^trans.html$', trans.trans),
+    url(r'^newtrans.html$', trans.newtrans),
     url(r'^query.html$', query.query),
 ]

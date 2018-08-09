@@ -7,35 +7,52 @@
 <div id="section">
 <h1>Contract</h1>
     <h2>New Contract</h2>
-    <div class='table'>
-	    <form enctype="multipart/form-data" action="/offer.html" method="post">
+        <a href="newoffer.html">Create a new offer</a><br>
+    <h2>My Offers</h2>
+        <div class='table'>
             <div class="table-tr">
 			{% csrf_token %}
             </div>
             <div class="table-tr" style="text-align:right">
-                <div class="table-th" style="width:20%">Time</div>
-                <div class="table-th" style="width:20%">Sender</div>
-                <div class="table-th" style="width:20%">Templates</div>
-                <div class="table-th" style="width:20%">Fee</div>
-                <div class="table-th" style="width:20%">Action</div>
+                <div class="table-th" style="width:30%">Time</div>
+                <div class="table-th" style="width:30%">Receiver</div>
+                <div class="table-th" style="width:10%">Fee</div>
+                <div class="table-th" style="width:30%">TID</div>
+            </div>
+            {% for x in offers %}
+                <div class="table-tr" style="text-align:right">
+                    <div class="table-td" style="width:30%">{{ x.1 }}</div>
+                    <div class="table-td" style="width:30%">{{ x.2 }}</div>
+                    <div class="table-td" style="width:10%">{{ x.3 }}</div>
+                    <div class="table-td" style="width:30%"><a href="{{x.4}}">{{x.0}}</a></div>
+                </div>
+            {% endfor %}
+	    </div>
+    <h2>My Received Offers</h2>
+    <div class='table'>
+            <div class="table-tr">
+			{% csrf_token %}
             </div>
             <div class="table-tr" style="text-align:right">
-                <div class="table-td" style="width:20%">{{ time }}</div>
-                <div class="table-td" style="width:20%">{{ sender }}</div>
-                <div class="table-td" style="width:20%">{{ tmpl }}</div>
-                <div class="table-td" style="width:20%">{{ fee }}</div>
-                <div class="table-td" style="width:20%"><button type="submit">Accept</button></div>
+                <div class="table-th" style="width:30%">Time</div>
+                <div class="table-th" style="width:25%">Sender</div>
+                <div class="table-th" style="width:10%">Fee</div>
+                <div class="table-th" style="width:25%">TID</div>
+                <div class="table-th" style="width:10%">Action</div>
             </div>
-	    </form>
-	</div>
-    <h2>My Offer</h2>
-    <p>
-        Show offers provide by myself(TBD)
-    </p>
-    <h2>Old Contracts</h2>
-    <p>
-        TBD
-    </p>
+            <form enctype="multipart/form-data" action="/newtrans.html" method="get">
+            {% for x in received %}
+                <div class="table-tr" style="text-align:right">
+                    <!--hidden  value="{{x.0}}" /-->
+                    <div class="table-td" style="width:30%">{{ x.1 }}</div>
+                    <div class="table-td" style="width:25%">{{ x.2 }}</div>
+                    <div class="table-td" style="width:10%">{{ x.3 }}</div>
+                    <div class="table-td" style="width:25%"><a href="{{x.4}}">{{x.0}}</a></div>
+                    <div class="table-td" style="width:10%"><button type="submit" name="Accept" value="{{x.0}}">Accept</button></div>
+                </div>
+            {% endfor %}
+            </form>
+	    </div>
 </div>
 
 {% include "footer.html" %}

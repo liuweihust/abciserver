@@ -1,0 +1,59 @@
+<html lang="en">
+{% include "head.html" %}
+<body>
+{% include "left.html" %}
+{% include "header.html" %}
+
+<div id="section">
+<h1>New Transaction</h1>
+    <div class='table'>
+	    <form enctype="multipart/form-data" action="/offer.html" method="post">
+            <div class="table-tr">
+			{% csrf_token %}
+            </div>
+            <!--div class="table-tr" style="text-align:right">
+                <div class="table-th" style="width:25%">Seller</div>
+                <div class="table-th" style="width:25%">Templates</div>
+                <div class="table-th" style="width:25%">Fee</div>
+                <div class="table-th" style="width:25%">Action</div>
+            </div-->
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:25%">TransID</div>
+                <div class="table-td" style="width:25%">{{cid}}</div>
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:25%">From</div>
+                <div class="table-td" style="width:25%">{{buyer}}</div>
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:25%">To</div>
+                <div class="table-td" style="width:25%">{{seller}}</div>
+            </div>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-td" style="width:25%">Fee</div>
+                <div class="table-td" style="width:25%">{{fee}}</div>
+            </div>
+
+            <p></p>
+            <div class="table-tr" style="text-align:right">
+                <div class="table-th" style="width:25%">TID</div>
+                <div class="table-th" style="width:55%">Action</div>
+                <div class="table-th" style="width:20%">Action1</div>
+            </div>
+            {% for x in subtids %}
+                <div class="table-tr" style="text-align:right">
+                    <div class="table-td" style="width:25%"><a href="{{x.1}}">{{x.0}}</a></div>
+                    <div class="table-td" style="width:55%"><input type="file" name="filename"></div>
+                    <div class="table-td" style="width:20%"><button type="submit" name="upload">Upload</button></div>
+                </div>
+            {% endfor %}
+            <div class="table-tr" style="width:25%"><button type="submit">Submit</button></div>
+
+	    </form>
+	</div>
+</div>
+
+{% include "footer.html" %}
+
+</body>
+</html>

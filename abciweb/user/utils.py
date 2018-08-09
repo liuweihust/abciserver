@@ -5,7 +5,7 @@ from user.models import ABCIUser
 
 CryptoBinFile="crypto"
 DataBinFile="getdata"
-DefaultKeyPath='./'
+DefaultKeyPath='./static/'
 
 def Execute(BinFile,CMD):
     execcmd = BinFile + CMD

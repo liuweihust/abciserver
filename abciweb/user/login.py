@@ -23,6 +23,15 @@ def auth(request):
 
 
     request.session['username'] = request.POST['username']
+    queryuser = ABCIUser.objects.get(username=context['username'])
+
+    request.session['pubkey'] = queryuser.pubkey
+
+    """
+    if not finduser:
+        return render(request, 'login.html', context)
+    """
+
     logging.debug("user:%s,pwd:%s"%(context['username'],context['password']))
     #return render(request, 'user.html', context)
     return HttpResponseRedirect('/user.html')
