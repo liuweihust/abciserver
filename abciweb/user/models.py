@@ -40,6 +40,7 @@ class Data(models.Model):
     did = models.CharField(max_length=30)
     tid = models.CharField(max_length=30)
     encode = models.CharField(max_length=30)
+    owner = models.CharField(max_length=80,default='')
     path = models.CharField(max_length=80)
     time = models.DateTimeField(default=datetime.datetime.now)
 

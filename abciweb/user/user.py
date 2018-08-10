@@ -51,3 +51,17 @@ def user(request):
 
     return render(request, "user.html", context)
 
+def newuser(request):
+    context = {}
+    if request.POST:
+        if 'username' not in request.POST:
+            return render(request, "newuser.html", context)
+
+        user = request.POST['username']
+        if len(user) == 0:
+            return render(request, "newuser.html", context)
+
+        utils.adduser(user)
+        return HttpResponseRedirect('/login.html')
+
+    return render(request, "newuser.html", context)

@@ -35,7 +35,10 @@ def offer(request):
     if user is None:
         return HttpResponseRedirect('/login.html')
 
-    request.GET.get('')
+    context = {}
+    context['username'] = user
+
+    #Handle new offer req
     if request.POST:
         buyer = request.POST['buyer']
         seller = request.POST['seller']
@@ -49,20 +52,20 @@ def offer(request):
         noffer = Offer(cid=cid,seller=seller,buyer=buyer,tid=tid,fee=int(fee),path=path)
         noffer.save()
 
+    #Prepare data for my provided offers
     info = []
     offers = Offer.objects.all().filter(buyer=request.session['pubkey'])
-    context = {}
+
     for item in offers:
         info.append([item.cid, item.time, item.seller, item.fee,item.path])
     context['offers'] = info
 
+    #Prepare data for my received offers
     recvs = []
     recoffers = Offer.objects.all().filter(seller=request.session['pubkey'])
     for item in recoffers:
         recvs.append([item.cid, item.time, item.seller, item.fee, item.path])
     context['received'] = recvs
-
-
 
     return render(request, "offer.html", context)
 
@@ -72,12 +75,16 @@ def newoffer(request):
         return HttpResponseRedirect('/login.html')
 
     context = {}
+    context['username'] = user
+
+    #Prepare my preuploaded templates to choose
     tmpldata = []
     tmpls = DataTemplate.objects.all().filter(sender=user)
     for item in tmpls:
         tmpldata.append([item.tid,item.tname])
     context['tmpls'] =  tmpldata
 
+    #Prepare users to be choose as receiver
     userdata = []
     users = ABCIUser.objects.all()
     for item in users:
@@ -85,6 +92,7 @@ def newoffer(request):
             userdata.append([item.username,item.pubkey])
     context['sellers'] = userdata
 
+    #default fee, changable
     context['fee'] = 5
     context['buyer'] = request.session.get('pubkey', None)
     return render(request, "newoffer.html", context)

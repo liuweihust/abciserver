@@ -5,10 +5,36 @@
 {% include "header.html" %}
 
 <div id="section">
-<h1>Data</h1>
-<p>
-data
-</p>
+    <h1>My Data</h1>
+    <div class='table'>
+        <div class="table-tr">
+            <div class="table-th">tid</div>
+            <div class="table-th">time</div>
+            <div class="table-th">did</div>
+		</div>
+        {% for x in data %}
+            <div class="table-tr">
+                <div class="table-td"><a href="{{x.3}}">{{x.2}}</a></div>
+                <div class="table-td">{{x.4}}</div>
+                <div class="table-td"><a href="{{x.1}}">{{x.0}}</a></div>
+            </div>
+        {% endfor %}
+	</div>
+    <h1>Transaction Data</h1>
+    <div class='table'>
+        <div class="table-tr">
+            <div class="table-th">tid</div>
+            <div class="table-th">time</div>
+            <div class="table-th">did</div>
+		</div>
+        {% for x in transdata %}
+            <div class="table-tr">
+                <div class="table-td"><a href="{{x.3}}">{{x.2}}</a></div>
+                <div class="table-td">{{x.4}}</div>
+                <div class="table-td"><a href="{{x.1}}">{{x.0}}</a></div>
+            </div>
+        {% endfor %}
+	</div>
 </div>
 
 {% include "footer.html" %}

@@ -18,6 +18,9 @@ def template(request):
         return HttpResponseRedirect('/login.html')
 
     context = {}
+    context['username'] = user
+
+    #Handle new template req
     if request.method == 'POST':
         obj = request.FILES.get('filename')
         if obj is not None:
@@ -49,19 +52,19 @@ def template(request):
                     valid = False
                 f.close()
 
+            #FIXME: send templates to blockchain here
+
             if valid:
                 tmpl = DataTemplate(sender=user,path=path,tid=data['tid'],
                             tname=data['tname'],category=data['category'])
                 tmpl.save()
 
-
-    context['username'] = user
-
+    #Prepare template list
     info = []
     tmpls = DataTemplate.objects.all().filter(sender=user)
-
     for item in tmpls:
-        info.append([item.tname,item.category,item.sender,item.path])
+        #info.append([item.tname,item.category,item.sender,item.path])
+        info.append([item.tid, item.path, item.time,item.tname, item.category])
     context['info'] = info
 
     return render(request, "tmpl.html", context)

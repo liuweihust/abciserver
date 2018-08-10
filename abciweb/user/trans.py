@@ -11,6 +11,7 @@ BASE_DIR="./static/"
 def trans(request):
     #return HttpResponse("hello")
     user = request.session.get('username', None)
+    pubkey = request.session.get('pubkey', None)
     if user is None:
         return HttpResponseRedirect('/login.html')
 
@@ -28,7 +29,7 @@ def trans(request):
             #Save data to DB
             with open(path, 'r') as f:
                 tdata = json.loads(f.read())
-                mdata = Data(did=tdata['did'],tid=tdata['tid'],encode='symm',path=path)
+                mdata = Data(did=tdata['did'],tid=tdata['tid'],encode='symm',path=path,owner=pubkey)
                 mdata.save()
 
         datastr = json.dumps(data_all)

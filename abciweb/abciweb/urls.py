@@ -25,8 +25,10 @@ from user import user,login,templates,data,trans,query,offer
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
+    url(r'^$', login.loginform),
     url(r'^login.html$', login.loginform),
     url(r'^authpost$', login.auth),
+    url(r'^newuser.html$', user.newuser),
     url(r'^user.html$', user.user),
     url(r'^tmpl.html$', templates.template),
     url(r'^data.html$', data.data),

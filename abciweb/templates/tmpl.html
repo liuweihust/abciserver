@@ -22,15 +22,17 @@
     <h2>My Template list</h2>
     <div class='table'>
         <div class="table-tr">
+            <div class="table-th">tid</div>
+            <div class="table-th">time</div>
             <div class="table-th">name</div>
             <div class="table-th">category</div>
-            <div class="table-th">content</div>
 		</div>
         {% for x in info %}
             <div class="table-tr">
-                <div class="table-th"><a href="{{x.3}}">{{x.0}}</a></div>
-                <div class="table-th">{{x.1}}</div>
-                <div class="table-th"> {{x.2}}</div>
+                <div class="table-td"><a href="{{x.1}}">{{x.0}}</a></div>
+                <div class="table-td">{{x.2}}</div>
+                <div class="table-td">{{x.3}}</div>
+                <div class="table-td"> {{x.4}}</div>
             </div>
         {% endfor %}
 	</div>
