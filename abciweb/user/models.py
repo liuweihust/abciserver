@@ -43,6 +43,7 @@ class Data(models.Model):
     owner = models.CharField(max_length=80,default='')
     path = models.CharField(max_length=80)
     time = models.DateTimeField(default=datetime.datetime.now)
+    key = models.CharField(max_length=80,default='')
 
     def __str__(self):
         return self.did

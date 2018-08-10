@@ -1,6 +1,6 @@
 <html lang="en">
 {% include "head.html" %}
-<body>
+<div>
 {% include "left.html" %}
 
 <div id="section">
@@ -14,16 +14,15 @@
                 <div class="table-td">Type</div>
                 <div class="table-td">
                     <select name="querytype" id="type" style="width:150px">
-                        <option value="all">All</option>
-                        <option value="tid">Template</option>
-                        <option value="did">Data</option>
-                        <option value="cid">Contract</option>
-                        <option value="sid">Transaction</option>
+                        <option value="template">Template</option>
+                        <option value="data">Data</option>
+                        <option value="contract">Contract</option>
+                        <option value="transaction">Transaction</option>
                     </select>
                 </div>
             </div>
             <div class="table-tr">
-                <div class="table-td">keyworld</div>
+                <div class="table-td">keyword</div>
                 <div class="table-td">
                     <input type="text" name="keyword" style="width:150px"/>
                 </div>
@@ -41,9 +40,16 @@
     <p>{{ rlt }}</p>
     </div>
 <h2>Result</h2>
-<p>
-{{ keydata }}
-</p>
+    <div class=""table-tr">
+                <div class="table-th">ID</div>
+                <div class="table-th">DecodeValue</div>
+    </div>
+    {% for x in result %}
+        <div class="table-tr">
+            <div class="table-td"><a href="{{x.1}}">{{x.0}}</a></div>
+            <div class="table-td"><a href="{{x.2}}">decode</a></div>
+        </div>
+    {% endfor %}
 </div>
 
 {% include "footer.html" %}

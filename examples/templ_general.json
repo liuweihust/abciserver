@@ -2,7 +2,7 @@
 	"type":"template",
 	"tid":"FW2018071601",
 	"tname":"Patient info",
-	"category":"general",
+	"category":"patient",
 	"template":[
 		{"name":"Patientname",
 		"DID":1,

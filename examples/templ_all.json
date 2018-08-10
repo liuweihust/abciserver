@@ -2,7 +2,8 @@
 	"type":"template",
 	"tid":"FW2018071604",
 	"tname":"FuWai Hospital Heart Depart FollowupSurvey",
-	"category":"FollowupSurvey:HeartDisease",
+	"category":"assembly",
+	"class":"FollowupSurvey:HeartDisease",
 	"template":[
 		{"name":"general",
 		"DID":1,

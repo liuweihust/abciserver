@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 import json
 from user.models import DataTemplate,Data,Transaction
 import uuid
+from user.utils import postdata,postcipherdata
+
 BASE_DIR="./static/"
 
 def trans(request):
@@ -17,19 +19,31 @@ def trans(request):
 
     context = {}
     context['username'] = user
+    buyer = ''
 
     if request.method == 'POST':
         transtr = request.POST['trans']
         data_all = json.loads(transtr)
 
+        # build transaction dict
+        transdic = {}
+        transdic['type'] = "transaction"
+        transdic['sid'] = str(uuid.uuid1())
+        transdic['cid'] = data_all['tid']
+        transdic['did'] = data_all['did']
+        buyer = data_all.pop('buyer')
+        transdic['keys'] = []
+
         for item in data_all['data']:
             path = item.pop('path')
             #FIXME: send path data here
+            encsecret,secret = postcipherdata(path,os.path.join(BASE_DIR, user + '.json'),buyer)
+            transdic['keys'].append({"DID":item['DID'],"Encode":"receiverpubkey,aes,sha1","key":encsecret})
 
             #Save data to DB
             with open(path, 'r') as f:
                 tdata = json.loads(f.read())
-                mdata = Data(did=tdata['did'],tid=tdata['tid'],encode='symm',path=path,owner=pubkey)
+                mdata = Data(did=tdata['did'],tid=tdata['tid'],encode='symm',path=path,owner=pubkey,key=secret)
                 mdata.save()
 
         datastr = json.dumps(data_all)
@@ -39,28 +53,24 @@ def trans(request):
         with open(dapath, 'w') as f:
             f.write(jsonstr)
             f.close()
-        #FIXME: send data_all file here
 
-        mdata = Data(did=data_all['did'],tid=data_all['tid'],encode='symm',path=dapath)
+        #Send data_all file, plain
+        postdata(dapath, os.path.join(BASE_DIR, user + '.json'))
+
+        mdata = Data(did=data_all['did'],tid=data_all['tid'],encode='plain',path=dapath)
         mdata.save()
 
-        #build transaction dict, send it  and save it to db
-
-        transdic = {}
-        transdic['type'] = "transaction"
-        transdic['sid'] = str(uuid.uuid1())
-        transdic['cid'] = data_all['tid']
-        transdic['did'] = data_all['did']
-        transdic['keys'] = []
-
-
+        #Send it and save it to db
         transtr = json.dumps(transdic)
         context['trans'] = transtr
         tranpath = os.path.join(BASE_DIR, transdic['sid'] + '.json')
         with open(tranpath, 'w') as f:
-            f.write(jsonstr)
+            f.write(transtr)
             f.close()
+        postdata(tranpath, os.path.join(BASE_DIR, user + '.json'))
 
+        mtrans = Transaction(sid=transdic['sid'],did=transdic['did'],cid=transdic['cid'])
+        mtrans.save()
         """
         cmd = CryptoBinFile + " -mode key -key " + BuyerPrvFile
         os.popen(cmd).read()
@@ -87,7 +97,6 @@ def newtrans(request):
     context['username'] = user
     if 'Accept' in request.GET:
         context['cid'] = request.GET['Accept']
-        context['loaded'] = False
         data_all = {}
         data_all['type'] = 'data'
         data_all['encode'] = 'plain'
@@ -96,7 +105,6 @@ def newtrans(request):
         data_all['data'] = []
     else:
         context['cid'] = request.POST['cid']
-        context['loaded'] = True
         data_all = json.loads(request.POST['trans'])
 
     with open(os.path.join(BASE_DIR,context['cid']+'.json'),'r') as f:
@@ -106,6 +114,8 @@ def newtrans(request):
         context['fee'] = data['fee']
         context['tid'] = data['tid']
         data_all['tid'] = data['tid']
+        #Will be remove later, to store buyer' pub key for trans
+        data_all['buyer'] = data['from']
         if data_all['did'] == '':
             data_all['did'] = str(uuid.uuid1())
         f.close()

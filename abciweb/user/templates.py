@@ -5,6 +5,7 @@ import os
 from django.http import HttpResponseRedirect
 from user.models import DataTemplate
 import json
+from user.utils import postdata
 
 BASE_DIR="./static/"
 
@@ -52,9 +53,12 @@ def template(request):
                     valid = False
                 f.close()
 
-            #FIXME: send templates to blockchain here
+
 
             if valid:
+                # Send templates to blockchain here
+                postdata(path, os.path.join(BASE_DIR, user + '.json'))
+
                 tmpl = DataTemplate(sender=user,path=path,tid=data['tid'],
                             tname=data['tname'],category=data['category'])
                 tmpl.save()

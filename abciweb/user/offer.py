@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from user.models import ABCIUser,DataTemplate,Offer
 import uuid
 import json
+from user.utils import postdata
 
 BASE_DIR="./static/"
 
@@ -20,7 +21,7 @@ def buildoffer(buyer,seller,fee,tid,cid=None):
     offer['fee'] = fee
     offer['tid'] = tid
     offer['encode'] = 'plain'
-    offer['type'] = 'cotract'
+    offer['type'] = 'contract'
 
     path = os.path.join(BASE_DIR,offer['cid']+".json")
     jsonstr = json.dumps(offer)
@@ -47,7 +48,7 @@ def offer(request):
 
         path, cid = buildoffer(buyer, seller, fee, tid=tid)
         # FIXME: do send transaction here
-
+        postdata(path, os.path.join(BASE_DIR, user + '.json'))
 
         noffer = Offer(cid=cid,seller=seller,buyer=buyer,tid=tid,fee=int(fee),path=path)
         noffer.save()

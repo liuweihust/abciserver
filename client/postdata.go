@@ -183,7 +183,7 @@ func main() {
 
 		secret, cipher := lib.NewCipher(msg)
 		strsecret := hex.EncodeToString(secret)
-		dataf["encode"] = "plain"
+		dataf["encode"] = "symm"
 		dataf["data"] = hex.EncodeToString(cipher)
 		fmt.Printf("Secret:%s\n", strsecret)
 
