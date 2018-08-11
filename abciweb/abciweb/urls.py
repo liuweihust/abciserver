@@ -36,5 +36,6 @@ urlpatterns = [
     url(r'^newoffer.html$', offer.newoffer),
     url(r'^trans.html$', trans.trans),
     url(r'^newtrans.html$', trans.newtrans),
+    url(r'^getdata.html$', trans.viewdata),
     url(r'^query.html$', query.query),
 ]

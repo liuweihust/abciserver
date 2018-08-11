@@ -4,9 +4,9 @@ import logging
 import os
 from django.http import HttpResponseRedirect
 import json
-from user.models import DataTemplate,Data,Transaction
+from user.models import DataTemplate,Data,Transaction,Offer
 import uuid
-from user.utils import postdata,postcipherdata
+from user import utils
 
 BASE_DIR="./static/"
 
@@ -29,7 +29,7 @@ def trans(request):
         transdic = {}
         transdic['type'] = "transaction"
         transdic['sid'] = str(uuid.uuid1())
-        transdic['cid'] = data_all['tid']
+        transdic['cid'] = data_all.pop('cid')
         transdic['did'] = data_all['did']
         buyer = data_all.pop('buyer')
         transdic['keys'] = []
@@ -37,7 +37,7 @@ def trans(request):
         for item in data_all['data']:
             path = item.pop('path')
             #FIXME: send path data here
-            encsecret,secret = postcipherdata(path,os.path.join(BASE_DIR, user + '.json'),buyer)
+            encsecret,secret = utils.postcipherdata(path,user,buyer)
             transdic['keys'].append({"DID":item['DID'],"Encode":"receiverpubkey,aes,sha1","key":encsecret})
 
             #Save data to DB
@@ -45,6 +45,7 @@ def trans(request):
                 tdata = json.loads(f.read())
                 mdata = Data(did=tdata['did'],tid=tdata['tid'],encode='symm',path=path,owner=pubkey,key=secret)
                 mdata.save()
+                f.close()
 
         datastr = json.dumps(data_all)
         context['dataall'] = datastr
@@ -55,7 +56,7 @@ def trans(request):
             f.close()
 
         #Send data_all file, plain
-        postdata(dapath, os.path.join(BASE_DIR, user + '.json'))
+            utils.postdata(dapath, user)
 
         mdata = Data(did=data_all['did'],tid=data_all['tid'],encode='plain',path=dapath)
         mdata.save()
@@ -67,23 +68,24 @@ def trans(request):
         with open(tranpath, 'w') as f:
             f.write(transtr)
             f.close()
-        postdata(tranpath, os.path.join(BASE_DIR, user + '.json'))
+            utils.postdata(tranpath, user)
 
-        mtrans = Transaction(sid=transdic['sid'],did=transdic['did'],cid=transdic['cid'])
+        mtrans = Transaction(sid=transdic['sid'],did=transdic['did'],cid=transdic['cid'],path=tranpath)
         mtrans.save()
-        """
-        cmd = CryptoBinFile + " -mode key -key " + BuyerPrvFile
-        os.popen(cmd).read()
-        logging.debug("genkey cmd=%s\n" % (cmd))
-        context['comments'] = "Generate ok"
-        """
 
-    """    
-    cmd = CryptoBinFile + " -mode pub -key " + BuyerPrvFile
-    context['keydata'] = os.popen(cmd).read()
-    logging.debug("buyer cmd=%s\n,keydata=%s" % (cmd,context['keydata']))
-    """
-    
+    trans=[]
+    selltrans=[]
+    btrans = Transaction.objects.all()
+    for tran in btrans:
+        qoffers = Offer.objects.all().filter(cid=tran.cid)
+        for offer in qoffers:
+            if offer.seller == pubkey:
+                selltrans.append([tran.sid,offer.cid,offer.tid,tran.did,tran.time,tran.path])
+            elif offer.buyer == pubkey:
+                trans.append([tran.sid,offer.cid,offer.tid,tran.did,tran.time,tran.path])
+
+    context['trans'] = trans
+    context['selltrans'] = selltrans
     return render(request, "trans.html", context)
 
 
@@ -114,6 +116,7 @@ def newtrans(request):
         context['fee'] = data['fee']
         context['tid'] = data['tid']
         data_all['tid'] = data['tid']
+        data_all['cid'] = data['cid']
         #Will be remove later, to store buyer' pub key for trans
         data_all['buyer'] = data['from']
         if data_all['did'] == '':
@@ -165,3 +168,50 @@ def newtrans(request):
 
     return render(request, "newtrans.html", context)
 
+def viewdata(request):
+    user = request.session.get('username', None)
+    pubkey = request.session.get('pubkey', None)
+    if user is None:
+        return HttpResponseRedirect('/login.html')
+
+    context = {}
+    context['username'] = user
+
+    if 'sid' not in request.GET:
+        return render(request, "trans.html", context)
+
+    mtran = Transaction.objects.get(sid=request.GET['sid'])
+    moffer = Offer.objects.get(cid=mtran.cid)
+    mtmpl = DataTemplate.objects.get(tid=moffer.tid)
+    mdataall = Data.objects.get(did=mtran.did)
+
+    with open(mtran.path, 'r') as f:
+        sdata = json.loads(f.read())
+        f.close()
+
+    with open(mdataall.path, 'r') as f:
+        dadata = json.loads(f.read())
+        f.close()
+
+    dataarray = []
+    plainarray = []
+    for i in range(len(dadata['data'])):
+        did = dadata['data'][i]['value']
+        _,subcipher = utils.query('data',did)
+        dataarray.append(subcipher[0]['tx']['data'])
+        encodedkey = None
+        for j in range(len(sdata)):
+            if sdata['keys'][j]['DID'] == dadata['data'][i]['DID']:
+                encodedkey = sdata['keys'][j]['key']
+                break
+
+        plain = utils.Decipher( subcipher[0]['tx']['data']['data'] ,encodedkey, user)
+        plainarray.append(plain)
+
+
+    context['sdata'] = json.dumps(sdata)
+    context['dadata'] = json.dumps(dadata)
+    context['dataarray'] = json.dumps(dataarray)
+    context['plainarray'] = json.dumps(plainarray)
+
+    return render(request, "getdata.html", context)

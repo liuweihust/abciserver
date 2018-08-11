@@ -47,8 +47,8 @@ def offer(request):
         tid = request.POST['tid']
 
         path, cid = buildoffer(buyer, seller, fee, tid=tid)
-        # FIXME: do send transaction here
-        postdata(path, os.path.join(BASE_DIR, user + '.json'))
+        # Send offer here
+        postdata(path, user)
 
         noffer = Offer(cid=cid,seller=seller,buyer=buyer,tid=tid,fee=int(fee),path=path)
         noffer.save()

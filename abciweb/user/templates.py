@@ -57,7 +57,7 @@ def template(request):
 
             if valid:
                 # Send templates to blockchain here
-                postdata(path, os.path.join(BASE_DIR, user + '.json'))
+                postdata(path, user)
 
                 tmpl = DataTemplate(sender=user,path=path,tid=data['tid'],
                             tname=data['tname'],category=data['category'])
