@@ -7,16 +7,47 @@
 <div id="section">
 <h1>Contract</h1>
     <h2>Trans</h2>
-    <p>{{sdata}}</p>
-
-    <h2>Data all</h2>
-    <p>{{dadata}}</p>
-
-    <h2>Cipher Data</h2>
-    <p>{{dataarray}}</p>
-
-    h2>Plain Data</h2>
-    <p>{{plainarray}}</p>
+    <div class="table">
+        <div class="table-tr">
+            <div class="table-th">sid</div>
+            <div class="table-td"><a href="{{spath}}">{{sid}}</a></div>
+        </div>
+        <div class="table-tr">
+            <div class="table-th">cid</div>
+            <div class="table-td"><a href="{{cpath}}">{{cid}}</a></div>
+        </div>
+        <div class="table-tr">
+            <div class="table-th">tid</div>
+            <div class="table-td"><a href="{{tpath}}">{{tid}}</a></div>
+        </div>
+        <div class="table-tr">
+            <div class="table-th">did</div>
+            <div class="table-td"><a href="{{dpath}}">{{did}}</a></div>
+        </div>
+        <div class="table-tr">
+            <div class="table-th">Time</div>
+            <div class="table-td">{{Time}}</div>
+        </div>
+        <div class="table-tr">
+            <div class="table-th">Seller</div>
+            <div class="table-td">{{seller}}</div>
+        </div>
+        <div class="table-tr">
+            <div class="table-th">Buyer</div>
+            <div class="table-td">{{buyer}}</div>
+        </div>
+    </div>
+    <h2>Templates and Data</h2>
+    <div class="table-tr">
+            <div class="table-th">Tenplates</div>
+            <div class="table-th">Data</div>
+        </div>
+    {% for x in tmplplainarray %}
+        <div class="table-tr">
+            <div class="table-td">{{x.0}}</div>
+            <div class="table-td">{{x.1}}</div>
+        </div>
+    {% endfor %}
 </div>
 
 {% include "footer.html" %}

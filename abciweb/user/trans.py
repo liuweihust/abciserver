@@ -181,37 +181,78 @@ def viewdata(request):
         return render(request, "trans.html", context)
 
     mtran = Transaction.objects.get(sid=request.GET['sid'])
-    moffer = Offer.objects.get(cid=mtran.cid)
-    mtmpl = DataTemplate.objects.get(tid=moffer.tid)
-    mdataall = Data.objects.get(did=mtran.did)
-
     with open(mtran.path, 'r') as f:
         sdata = json.loads(f.read())
         f.close()
 
+    moffer = Offer.objects.get(cid=mtran.cid)
+    with open(moffer.path, 'r') as f:
+        cdata = json.loads(f.read())
+        f.close()
+
+    mtmpl = DataTemplate.objects.get(tid=moffer.tid)
+    with open(mtmpl.path, 'r') as f:
+        tdata = json.loads(f.read())
+        f.close()
+
+    for i in range(len(tdata['template'])):
+        pass
+
+    mdataall = Data.objects.get(did=mtran.did)
     with open(mdataall.path, 'r') as f:
         dadata = json.loads(f.read())
         f.close()
 
     dataarray = []
-    plainarray = []
+    tmplplainarray = []
     for i in range(len(dadata['data'])):
+        #Fetch data
         did = dadata['data'][i]['value']
         _,subcipher = utils.query('data',did)
         dataarray.append(subcipher[0]['tx']['data'])
         encodedkey = None
+
+        tplid = None
+        for j in range(len(tdata['template'])):
+            if tdata['template'][j]['DID'] == dadata['data'][i]['DID']:
+                tplid = DataTemplate.objects.get(tid=tdata['template'][j]['tid'])
+                break
+
+        if tplid is None:
+            print("TPL ID not found:%s\n"%tdata['template'][j]['DID']['tid'])
+
+        with open(tplid.path, 'r') as f:
+            tpldata = json.loads(f.read())
+            f.close()
+
         for j in range(len(sdata)):
             if sdata['keys'][j]['DID'] == dadata['data'][i]['DID']:
                 encodedkey = sdata['keys'][j]['key']
                 break
 
         plain = utils.Decipher( subcipher[0]['tx']['data']['data'] ,encodedkey, user)
-        plainarray.append(plain)
+        tmplplainarray.append([plain,json.dumps(tpldata['template'])])
 
-
-    context['sdata'] = json.dumps(sdata)
+    """
+    context['trans'] = json.dumps(sdata)
+    context['offer'] = json.dumps(cdata)
     context['dadata'] = json.dumps(dadata)
     context['dataarray'] = json.dumps(dataarray)
-    context['plainarray'] = json.dumps(plainarray)
+    context['tmplplainarray'] = json.dumps(tmplplainarray)
+    context['tmpls'] = json.dumps(plainarray)
+    """
+
+    context['sid'] = request.GET['sid']
+    context['cid'] = sdata['cid']
+    context['tid'] = moffer.tid
+    context['did'] = sdata['did']
+    context['Time'] = mtran.time
+    context['seller'] = cdata['to']
+    context['buyer'] = cdata['from']
+    context['spath'] = mtran.path
+    context['cpath'] = moffer.path
+    context['tpath'] = mtmpl.path
+    context['dpath'] = mdataall.path
+    context['tmplplainarray'] = tmplplainarray
 
     return render(request, "getdata.html", context)
