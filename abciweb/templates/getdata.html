@@ -38,15 +38,26 @@
         </div>
     </div>
     <h2>Templates and Data</h2>
-    <div class="table-tr">
-            <div class="table-th">Tenplates</div>
-            <div class="table-th">Data</div>
-        </div>
-    {% for x in tmplplainarray %}
+    {% for list in tmplplainarray %}
+    <h3>{{list.0}}</h3>
+    <div class="table">
         <div class="table-tr">
-            <div class="table-td">{{x.0}}</div>
-            <div class="table-td">{{x.1}}</div>
+            <div class="table-th">DID</div>
+            <div class="table-th">Name</div>
+            <div class="table-th">Type</div>
+            <div class="table-th">Required</div>
+            <div class="table-th">Value</div>
         </div>
+        {% for x in list.1 %}
+            <div class="table-tr">
+              <div class="table-td">{{x.0}}</div>
+                <div class="table-td">{{x.1}}</div>
+                <div class="table-td">{{x.2}}</div>
+                <div class="table-td">{{x.3}}</div>
+                <div class="table-td">{{x.4}}</div>
+            </div>
+        {% endfor %}
+    </div>
     {% endfor %}
 </div>
 

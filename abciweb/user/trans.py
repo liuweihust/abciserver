@@ -230,9 +230,16 @@ def viewdata(request):
                 encodedkey = sdata['keys'][j]['key']
                 break
 
+        tmp = []
         plain = utils.Decipher( subcipher[0]['tx']['data']['data'] ,encodedkey, user)
-        tmplplainarray.append([plain,json.dumps(tpldata['template'])])
-
+        data = json.loads(plain)
+        for j in range(len(tpldata['template'])):
+            for k in range(len(data)):
+                if tpldata['template'][j]['DID'] == data[k]['DID']:
+                    value = data[k]['value']
+                    break
+            tmp.append([tpldata['template'][j]['DID'],tpldata['template'][j]['name'],tpldata['template'][j]['type'],tpldata['template'][j]['required'],value])
+        tmplplainarray.append([tpldata['tname'],tmp])
     """
     context['trans'] = json.dumps(sdata)
     context['offer'] = json.dumps(cdata)
