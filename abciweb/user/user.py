@@ -17,12 +17,6 @@ def global_setting(request):
         'PUBKEY': settings.PUBKEY,
     }
 
-def gui(request):
-    #return HttpResponse("hello")
-    context = {}
-    context['name'] = 'Hello World!'
-    return render(request, 'index.html', context)
-
 def user(request):
     #return HttpResponse("hello")
     cat = request.path.split('/')

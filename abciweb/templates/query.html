@@ -1,17 +1,15 @@
 <html lang="en">
 {% include "head.html" %}
-<div>
+<body>
 {% include "left.html" %}
-    {% include "header.html" %}
-
-<div id="section">
+{% include "header.html" %}
+<main>
     <h1>Query BlcokChain</h1>
     <h2>Query Creteria</h2>
-    <div align="center" id="login" style="height:100">
     <form action="/query.html" method="get">
     {% csrf_token %}
         <div class="table">
-            <div class=""table-tr">
+            <div class="table-tr">
                 <div class="table-td">Type</div>
                 <div class="table-td">
                     <select name="querytype" id="type" style="width:150px">
@@ -39,21 +37,20 @@
         </div>
     </form>
     <p>{{ rlt }}</p>
-    </div>
 <h2>Result</h2>
-    <div class=""table-tr">
+    <div class="table">
+        <div class="table-tr">
                 <div class="table-th">ID</div>
                 <div class="table-th">DecodeValue</div>
-    </div>
-    {% for x in result %}
-        <div class="table-tr">
-            <div class="table-td"><a href="{{x.1}}">{{x.0}}</a></div>
-            <div class="table-td"><a href="{{x.2}}">decode</a></div>
         </div>
-    {% endfor %}
-</div>
-
+        {% for x in result %}
+            <div class="table-tr">
+             <div class="table-td"><a href="{{x.1}}">{{x.0}}</a></div>
+             <div class="table-td"><a href="{{x.2}}">decode</a></div>
+            </div>
+        {% endfor %}
+    </div>
+</main>
 {% include "footer.html" %}
-
 </body>
 </html>

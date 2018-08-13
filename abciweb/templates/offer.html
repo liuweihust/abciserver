@@ -3,8 +3,7 @@
 <body>
 {% include "left.html" %}
 {% include "header.html" %}
-
-<div id="section">
+<main>
 <h1>Contract</h1>
     <h2>Previded Contracts</h2>
         <a href="newoffer.html">Create a new offer</a><br>
@@ -29,10 +28,9 @@
             {% endfor %}
 	    </div>
     <h2>Received Offers</h2>
+    <form enctype="multipart/form-data" action="/newtrans.html" method="get">
     <div class='table'>
-            <div class="table-tr">
-			{% csrf_token %}
-            </div>
+            <div class="table-tr">{% csrf_token %}</div>
             <div class="table-tr" style="text-align:right">
                 <div class="table-th" style="width:30%">Time</div>
                 <div class="table-th" style="width:25%">Sender</div>
@@ -40,10 +38,9 @@
                 <div class="table-th" style="width:25%">TID</div>
                 <div class="table-th" style="width:10%">Action</div>
             </div>
-            <form enctype="multipart/form-data" action="/newtrans.html" method="get">
+
             {% for x in received %}
                 <div class="table-tr" style="text-align:right">
-                    <!--hidden  value="{{x.0}}" /-->
                     <div class="table-td" style="width:30%">{{ x.1 }}</div>
                     <div class="table-td" style="width:25%">{{ x.2 }}</div>
                     <div class="table-td" style="width:10%">{{ x.3 }}</div>
@@ -51,11 +48,9 @@
                     <div class="table-td" style="width:10%"><button type="submit" name="Accept" value="{{x.0}}">Accept</button></div>
                 </div>
             {% endfor %}
-            </form>
-	    </div>
-</div>
-
+    </div>
+    </form>
+</main>
 {% include "footer.html" %}
-
 </body>
 </html>

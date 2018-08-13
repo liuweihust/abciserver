@@ -3,8 +3,7 @@
 <body>
 {% include "left.html" %}
 {% include "header.html" %}
-
-<div id="section">
+<main>
 <h1>New Transaction</h1>
     <div class='table'>
 	    <form enctype="multipart/form-data" action="/newtrans.html" method="post">
@@ -57,9 +56,7 @@
             <div class="table-tr" style="width:25%"><button type="submit">Submit</button></div>
         </form>
 	</div>
-</div>
-
+</main>
 {% include "footer.html" %}
-
 </body>
 </html>

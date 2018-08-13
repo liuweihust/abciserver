@@ -3,12 +3,11 @@
 <body>
 {% include "left.html" %}
 {% include "header.html" %}
-
-<div id="section">
+<main>
 <h1>Trans</h1>
     <h2>My Transaction</h2>
+    <form enctype="multipart/form-data" action="/getdata.html" method="get">
         <div class="table">
-            <form enctype="multipart/form-data" action="/getdata.html" method="get">
             <div class="table-tr">
                 <div class="table-th">sid</div>
                 <div class="table-th">cid</div>
@@ -27,8 +26,8 @@
                     <div class="table-td"><button type="submit">ShowData</button></div>
                 </div>
             {% endfor %}
-            </form>
         </div>
+        </form>
         <h2>My selled Transaction</h2>
         <div class="table">
             <div class="table-tr">
@@ -48,7 +47,7 @@
                 </div>
             {% endfor %}
         </div>
-</div>
+</main>
 {% include "footer.html" %}
 </body>
 </html>

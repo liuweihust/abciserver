@@ -1,6 +1,70 @@
+*{
+	padding: 0;
+	margin: 0;
+}
+
+body{
+	position: relative;
+	color: #fff;
+}
+
+header{
+		position: fixed;
+		width: 85%;
+		height: 10%;
+		left: 15%;
+		z-index: 10;
+		background-color: lightblue;
+}
+
+aside{
+		position: fixed;
+		height: 95%;
+		width: 15%;
+		top: 0;
+		z-index: 10;
+		background-color:#eeeeee;
+}
+
+main{
+		position: fixed;
+		top: 10%;
+		height: 85%;
+		left: 15%;
+		width: 85%;
+		overflow-y: auto;
+}
+
+footer{
+		position: fixed;
+		bottom: 0;
+		width: 100%;
+		height: 5%;
+		z-index: 11;
+		background-color: green;
+		text-align:center;
+}
+
+.table, .table * {margin: 10px 10px 10px 10px; padding: 0;font-size: 14px;font-family: Arial, 宋体, Helvetica, sans-serif;color:#000000}
+.table {margin: 10px 10px 10px 10px; display: table; width: 100%; border-collapse: collapse;}
+.table-tr {display: table-row; height: 30px;}
+.table-th {display: table-cell;font-weight: bold;height: 30px; border: 1px solid gray;text-align: center;vertical-align: middle;}
+.table-td {display: table-cell; height: 30px;border: 1px solid gray; text-align: center;vertical-align: middle;}
+
+a:link {color:blue;}
+a:visited {color:blue;}
+a:hover {color:red;}
+a:active {color:black;}
+
+h1{
+color:red;
+}
+h2{
+color:green;
+}
+/*
 html,body
 {
-     width:100%;
      height:100%;
 }
 
@@ -8,32 +72,35 @@ html,body
     line-height:30px;
     background-color:#eeeeee;
     height:600;
-    width:200;
+    width:20%;
     float:left;
-    padding:5px; 
+    padding:5px;
 }
 
-#header {
-    height:70px;
-    background-color:lightblue;
-    color:red;
+#header{
+    position: fixed;
+    z-index: 0;
+    width: 80%;
+    height: 5%;
+    float:right;
     text-align:right;
-    padding:0px;
-    margin:0px;
-    width:auto;
 }
 
 #section {
-    height:600;
-    width:800;
-    float:left;
-    padding:10px; 
+    height:90%;
+    width:100%;
+    float:right;
 }
 
-#footer {
-    background-color:green;
+#footer{
+    position: fixed;
+    width: 100%;
+    height:5%;
+    position:absolute;
+    bottom:0px;
+    left:0px;
     color:white;
-    clear:both;
+    background-color: green;
     text-align:center;
 }
 
@@ -56,12 +123,10 @@ input{
 }
 
 .table, .table * {margin: 0 auto; padding: 0;font-size: 14px;font-family: Arial, 宋体, Helvetica, sans-serif;}
-.table {display: table; width: 80%; border-collapse: collapse;}
+.table {display: table; width: 100%; border-collapse: collapse;}
 .table-tr {display: table-row; height: 30px;}
 .table-th {display: table-cell;font-weight: bold;height: 100%;border: 1px solid gray;text-align: center;vertical-align: middle;}
 .table-td {display: table-cell; height: 100%;border: 1px solid gray; text-align: center;vertical-align: middle;}
 
-a:link {color:blue;} /* 未访问的链接 */
-a:visited {color:blue;} /* 已访问的链接 */
-a:hover {color:red;} /* 鼠标划过链接 */
-a:active {color:black;} /* 已选中的链接 */
+
+*/
