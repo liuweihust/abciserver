@@ -119,8 +119,6 @@ func main() {
 	server := flag.String("server", "127.0.0.1", "server address")
 	port := flag.Int("port", 26657, "server port")
 	cipher := flag.String("cipher", "plain", "whether to encipher data,options:plain,symm,pubenc")
-	pubkey := flag.String("pubkey", "", "receiver's pubkey")
-	mode := flag.String("mode", "postdata", "Task:postdata,pub(show pubkey),pubenc(using pubkey to encode data)")
 	verbose = flag.Bool("v", false, "Verbose:default false")
 	//plain := flag.String("plain", "", "data to encode using pubkey")
 
@@ -132,36 +130,6 @@ func main() {
 	if err != nil {
 		fmt.Printf("Error:GetKey:%v\n", err)
 		panic(2)
-	}
-
-	switch *mode {
-	/*
-		case "pub":
-			fmt.Print(hex.EncodeToString(lib.Getpubkey()))
-			return
-		case "pubenc":
-			if *plain == "" {
-
-				fmt.Println("Error:Must provide data to be encoded!")
-				return
-			}
-			if *pubkey == "" {
-				fmt.Println("Error:Must provide pubkey to encod data!")
-				return
-			}
-			lib.ImportReceiver(*pubkey)
-			cipher, err := lib.SendReceiver([]byte(*plain))
-			if err != nil {
-				fmt.Printf("Error:Encode with pubkey:%v\n", err)
-				return
-			}
-			fmt.Printf("%s", hex.EncodeToString(cipher))
-			return
-	*/
-	case "postdata":
-	default:
-		fmt.Printf("Error:Mode:%s\n", *mode)
-		return
 	}
 
 	data, err := Load(*file)
@@ -201,35 +169,36 @@ func main() {
 			}
 			fmt.Printf("bytes equal:%v\n", bytes.Compare(msg, newplain))
 		*/
-	case "pubkey":
-		if (*pubkey) == "" {
-			fmt.Println("Error:Using pubkey enciper must provide pubkey")
-			return
-		}
-		lib.ImportReceiver(*pubkey)
-
-		msg, err := json.Marshal(dataf["data"])
-		if err != nil {
-			fmt.Printf("Error:Marshal json:%v\n", err)
-			panic(2)
-		}
-
-		cipher, err := lib.SendReceiver(msg)
-		if err != nil {
-			fmt.Printf("Error:encode with pubkey:%v\n", err)
-			panic(2)
-		}
-		dataf["encode"] = "pubkey"
-		dataf["data"] = hex.EncodeToString(cipher)
 		/*
-			//Blow code will decode the cipher encoded by pubkey
-			decipher, err := lib.PrvDecrypt(cipher)
-			if err != nil {
-				fmt.Printf("Error:Prv Decipher:%v\n", err)
-				panic(2)
-			}
-			fmt.Printf("PrvDecrypt:%s\n", decipher)
-			fmt.Printf("bytes equal:%v\n", bytes.Compare(msg, decipher))
+			case "pubkey":
+				if (*pubkey) == "" {
+					fmt.Println("Error:Using pubkey enciper must provide pubkey")
+					return
+				}
+				lib.ImportReceiver(*pubkey)
+
+				msg, err := json.Marshal(dataf["data"])
+				if err != nil {
+					fmt.Printf("Error:Marshal json:%v\n", err)
+					panic(2)
+				}
+
+				cipher, err := lib.SendReceiver(msg)
+				if err != nil {
+					fmt.Printf("Error:encode with pubkey:%v\n", err)
+					panic(2)
+				}
+				dataf["encode"] = "pubkey"
+				dataf["data"] = hex.EncodeToString(cipher)
+
+					//Blow code will decode the cipher encoded by pubkey
+					decipher, err := lib.PrvDecrypt(cipher)
+					if err != nil {
+						fmt.Printf("Error:Prv Decipher:%v\n", err)
+						panic(2)
+					}
+					fmt.Printf("PrvDecrypt:%s\n", decipher)
+					fmt.Printf("bytes equal:%v\n", bytes.Compare(msg, decipher))
 		*/
 	case "plain":
 	default: //switch *cipher

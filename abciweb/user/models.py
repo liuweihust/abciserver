@@ -57,3 +57,11 @@ class Transaction(models.Model):
 
     def __str__(self):
         return self.sid
+
+class symmkeys(models.Model):
+    kid = models.CharField(max_length=80, primary_key=True)
+    owner = models.CharField(max_length=80)
+    key = models.CharField(max_length=80)
+
+    def __str__(self):
+        return self.kid

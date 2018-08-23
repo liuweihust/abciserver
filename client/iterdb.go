@@ -1,20 +1,12 @@
 package main
 
 import (
-	//"bytes"
-	//"encoding/base64"
-	//"encoding/json"
 	"encoding/binary"
 	"flag"
 	"fmt"
 	bs "github.com/tendermint/tendermint/blockchain"
 	dbm "github.com/tendermint/tendermint/libs/db"
 	"github.com/tendermint/tendermint/state"
-	//"io/ioutil"
-	//"net/http"
-	//"strconv"
-	//"path/filepath"
-	//cmn "github.com/tendermint/tendermint/libs/common"
 )
 
 func myiter() {
@@ -73,10 +65,11 @@ func main() {
 			continue
 		}
 		header := block.Header
-		if header == nil {
-			fmt.Printf("Height:%d:nil header\n", i)
-			continue
-		}
+		/*
+			if header == nil {
+				fmt.Printf("Height:%d:nil header\n", i)
+				continue
+			}*/
 		fmt.Printf("Height:%d tx num:%d\n", i, header.NumTxs)
 		data := block.Data
 		//fmt.Printf("data type:%T", data)
